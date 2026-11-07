@@ -1,0 +1,15 @@
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react()],
+  cacheDir: '.cache/vite',
+  server: { proxy: { '/api': 'http://127.0.0.1:4174' } },
+  build: { rolldownOptions: { output: { codeSplitting: { groups: [{ name: 'three', test: /node_modules[\\/].*three/ }] } } } },
+  resolve: {
+    alias: {
+      "@": path.resolve(import.meta.dirname, "./src"),
+    },
+  },
+});

@@ -1,0 +1,49 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import { randomUUID } from 'node:crypto'
+import { setTimeout as delay } from 'node:timers/promises'
+
+const dir = mkdtempSync(join(tmpdir(), 'learn-code-qa-'))
+const port = 4197
+const origin = 'http://127.0.0.1:' + port
+let child
+async function start() {
+  child = spawn(process.execPath, ['server/index.mjs'], { cwd: resolve('.'), env: { ...process.env, PORT: String(port), DB_PATH: join(dir,'test.sqlite') }, stdio: 'pipe' })
+  let log = ''
+  child.stderr.on('data', b => { log += b })
+  for (let i=0;i<60;i++) {
+    if (child.exitCode !== null) throw new Error(log)
+    try { if ((await fetch(origin+'/api/health')).ok) return } catch {}
+    await delay(50)
+  }
+  throw new Error('Server did not start: '+log)
+}
+async function stop() {
+  if (!child || child.exitCode !== null) return
+  const exited = new Promise(r=>child.once('exit',r))
+  child.kill(); await exited
+}
+const key = randomUUID()
+const headers = { 'Content-Type':'application/json', 'X-Profile-Key':key }
+const state = { version:1,xp:120,completed:['python-first-contact'],completedAt:{'python-first-contact':'2026-11-07T10:00:00.000Z'},drafts:{'python-first-contact':'hero.move("right")'},activity:[0,0,0,0,0,1,0],streak:1,lastCompletionDate:'2026-11-07',sound:false,motion:true }
+const put = (value, h=headers) => fetch(origin+'/api/progress',{method:'PUT',headers:h,body:JSON.stringify(value)})
+test('SQLite API: validation, isolation, persistence and static hosting', async t => {
+  try {
+    await start()
+    await t.test('database health',async()=>assert.deepEqual(await (await fetch(origin+'/api/health')).json(),{ok:true,storage:'sqlite'}))
+    await t.test('profile key required',async()=>assert.equal((await fetch(origin+'/api/progress')).status,401))
+    await t.test('new profile is empty',async()=>assert.equal((await (await fetch(origin+'/api/progress',{headers})).json()).progress,null))
+    await t.test('save and read exact Unicode/code state',async()=>{ assert.equal((await put(state)).status,200); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,state) })
+    await t.test('separate learners cannot read this profile',async()=>assert.equal((await (await fetch(origin+'/api/progress',{headers:{'X-Profile-Key':randomUUID()}})).json()).progress,null))
+    await t.test('reject malformed state and unknown missions',async()=>{ for (const s of [{},{...state,xp:-1},{...state,completed:['bad']},{...state,drafts:{bad:'x'}},{...state,motion:'true'}]) assert.equal((await put(s)).status,400) })
+    await t.test('reject duplicate completion',async()=>assert.equal((await put({...state,completed:['python-first-contact','python-first-contact']})).status,400))
+    await t.test('reject malformed JSON and body overflow',async()=>{ assert.equal((await fetch(origin+'/api/progress',{method:'PUT',headers,body:'{'})).status,400); assert.equal((await put({...state,excess:'x'.repeat(310000)})).status,413) })
+    await t.test('unsupported method and content type',async()=>{ assert.equal((await fetch(origin+'/api/progress',{method:'DELETE',headers})).status,405); assert.equal((await put(state,{'X-Profile-Key':key})).status,415) })
+    await t.test('database survives server restart',async()=>{ await stop(); await start(); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,state) })
+    await t.test('SPA and missing assets',async()=>{ assert.equal((await fetch(origin+'/')).status,200); assert.equal((await fetch(origin+'/some-route')).status,200); assert.equal((await fetch(origin+'/assets/not-real.js')).status,404) })
+  } finally { await stop(); rmSync(dir,{recursive:true,force:true}) }
+})

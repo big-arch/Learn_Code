@@ -1,0 +1,109 @@
+
+/* Learning workspace: quiet surfaces, readable copy and visible feedback. */
+:root { --muted: #9bab9f; --text-soft: #c0ccc3; --radius: 16px; }
+.loading-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; font-size: 28px; color: var(--lime); letter-spacing: .08em; }
+.loading-screen span { font-size: 15px; letter-spacing: 0; color: var(--text-soft); }
+.home-hero { padding-bottom: 12px; }
+.hero-eyebrow { line-height: 1.7; }
+.beginner-path { display: grid; grid-template-columns: 1fr 1.5fr; gap: 36px; margin: 36px 0; padding: 32px; border: 1px solid #3a4e3b; border-radius: 20px; background: linear-gradient(115deg, #1b291d, #121b18 60%); }
+.beginner-intro h2 { font-size: clamp(22px, 2.2vw, 32px); letter-spacing: -.04em; line-height: 1.2; }
+.beginner-intro p { margin: 12px 0 18px; color: var(--text-soft); font-size: 14px; }
+.beginner-intro button { display: flex; align-items: center; gap: 8px; min-height: 44px; border: 0; padding: 0; background: transparent; color: var(--lime); font-size: 13px; font-weight: 700; text-align: left; }
+.learning-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-self: center; }
+.learning-steps article { position: relative; border-left: 1px solid #354839; padding-left: 18px; }
+.learning-steps article > span { position: absolute; top: 0; right: 0; color: #637568; font-family: var(--font-mono); font-size: 11px; }
+.learning-steps svg { margin: 0 0 20px; color: var(--lime); }
+.learning-steps h3 { margin-bottom: 8px; font-size: 15px; }
+.learning-steps p { font-size: 12px; color: var(--text-soft); line-height: 1.7; }
+.lesson-tabs { display: flex; gap: 12px; margin: 18px 0; }
+.lesson-tabs button { flex: 1; display: flex; align-items: center; gap: 12px; min-height: 55px; padding: 12px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text-soft); text-align: left; font-size: 14px; }
+.lesson-tabs button > span { color: var(--muted); font-family: var(--font-mono); font-size: 12px; }
+.lesson-tabs button.active { border-color: #7b9644; background: #202c1c; color: var(--lime); }
+.lesson-tabs svg { margin-left: auto; flex-shrink: 0; }
+.lesson-guide { margin-bottom: 20px; background: #14201b; overflow: hidden; }
+.lesson-guide summary { display: flex; align-items: center; gap: 12px; padding: 20px 24px; cursor: pointer; font-size: 16px; font-weight: 700; list-style: none; }
+.lesson-guide summary:after { content: '＋'; margin-left: auto; color: var(--lime); }
+.lesson-guide[open] summary:after { content: '−'; }
+.lesson-guide summary:focus-visible { outline: 2px solid var(--lime); outline-offset: -3px; }
+.lesson-guide summary svg { color: var(--lime); flex-shrink: 0; }
+.guide-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 4px 24px 24px; }
+.guide-body code { display: block; padding: 16px; background: #0c1410; border: 1px solid #334538; border-radius: 9px; color: var(--lime); font-family: var(--font-mono); font-size: 13px; overflow-wrap: anywhere; }
+.guide-body p { margin-top: 14px; color: var(--text-soft); font-size: 12px; line-height: 1.8; }
+.guide-body ol { padding-left: 20px; color: var(--text-soft); font-size: 13px; line-height: 1.8; }
+.guide-body li + li { margin-top: 6px; }
+.arena-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.mission-brief { grid-column: 1 / -1; padding: 24px; }
+.mission-brief h2 { font-size: 24px; }
+.mission-brief > p { font-size: 14px; max-width: 920px; }
+.mission-number { font-size: 11px; margin-bottom: 10px; }
+.objective-box { margin-top: 16px; }
+.objective-box strong { font-size: 13px; }
+.objective-box p { font-size: 13px; color: var(--text-soft); overflow-wrap: anywhere; }
+.mission-reward { font-size: 12px; }
+.mission-reward b { margin-left: 10px; font-size: 12px; }
+.arena-editor { grid-column: 1; grid-row: 2; }
+.preview-with-trace { grid-column: 2; grid-row: 2; min-width: 0; }
+.mission-console { grid-column: 1 / -1; padding: 22px; }
+.mission-preview { min-height: 320px; }
+.editor-body { height: 322px; }
+.editor-body textarea { font-size: 14px; padding: 20px 16px; }
+.line-numbers { font-size: 14px; padding-top: 20px; }
+.active-line { color: var(--lime); background: #354625; border-radius: 3px; }
+.editor-file { font-size: 12px; }
+.editor-footer > span { font-size: 10px; }
+.editor-footer { min-height: 64px; }
+.robot-world, .robot-canvas { position: absolute; inset: 0; }
+.robot-world { padding: 28px 0; }
+.robot-canvas[hidden] { display: none; }
+.preview-label { font-size: 10px; color: #bac9bc; }
+.preview-status { font-size: 9px; color: #9ab6a4; }
+.fallback-board { width: 240px; margin: 30px auto; display: grid; grid-template-columns: repeat(3, 1fr); }
+.fallback-board > div { display: grid; place-items: center; height: 65px; background: #283c2c; border: 1px solid #5c7558; font-size: 26px; }
+.fallback-board small { grid-column: 1 / -1; font-size: 11px; text-align: center; padding-top: 8px; }
+.trace-panel { padding: 14px 0 0; }
+.trace-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.trace-controls button { min-height: 36px; padding: 7px 12px; border: 1px solid #42563d; border-radius: 6px; background: #1b271c; color: var(--lime); font-size: 12px; }
+.trace-controls span { margin-left: auto; color: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+.trace-panel p { font-size: 12px; color: var(--text-soft); margin: 10px 0 0; min-height: 36px; }
+.console-title h3 { font-size: 15px; }
+.test-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.test-list > div, .validation-message, .hint-content p { font-size: 13px; }
+.validation-message { padding: 14px; line-height: 1.7; }
+.hint-button, .next-mission { min-height: 44px; font-size: 13px; }
+.hint-content span, .completion-card span { font-size: 11px; }
+.completion-card strong { font-size: 14px; }
+.hint-content { padding: 16px; }
+.simulation-note { font-size: 11px; text-align: left; line-height: 1.8; }
+.language-switcher button { font-size: 13px; min-height: 44px; }
+.free-stamp { display: none; }
+.local-data-note p { font-size: 12px; }
+@media (max-width: 1150px) { .beginner-path { grid-template-columns: 1fr; gap: 24px; } }
+@media (max-width: 900px) {
+  .arena-grid { grid-template-columns: minmax(0, 1fr); }
+  .arena-editor { grid-column: 1; grid-row: 2; }
+  .preview-with-trace { grid-column: 1; grid-row: 3; }
+  .mission-console { grid-row: 4; }
+  .guide-body { grid-template-columns: 1fr; gap: 18px; }
+  .editor-body { height: 265px; }
+  .lesson-tabs button { font-size: 12px; padding: 12px; gap: 8px; }
+}
+@media (max-width: 520px) {
+  .beginner-path { padding: 22px; margin-block: 24px; }
+  .learning-steps { grid-template-columns: 1fr; gap: 18px; }
+  .learning-steps article { padding-left: 44px; border-left: 0; }
+  .learning-steps svg { position: absolute; left: 0; top: 3px; }
+  .learning-steps h3 { margin-bottom: 4px; }
+  .lesson-tabs { flex-direction: column; gap: 8px; }
+  .lesson-guide summary { font-size: 14px; padding: 18px; }
+  .guide-body { padding-inline: 18px; }
+  .mission-brief { padding: 18px; }
+  .test-list { grid-template-columns: 1fr; }
+  .arena-heading h1 { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *:before, *:after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+
+html { scroll-behavior: auto; }
+.run-button { min-height: 44px; }
+.run-button:hover { transform: none; }
+button, summary { scroll-margin-block: 100px; }

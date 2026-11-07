@@ -1,0 +1,10 @@
+services:
+  learn-code:
+    build: .
+    ports:
+      - "127.0.0.1:4174:4174"
+    volumes:
+      - learning-data:/app/data
+    restart: unless-stopped
+volumes:
+  learning-data:

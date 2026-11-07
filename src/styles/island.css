@@ -1,0 +1,21 @@
+.learning-island { position: absolute; inset: 40px 0 82px; overflow: hidden; }
+.island-canvas { width: 100%; height: 100%; min-height: 340px; content-visibility: auto; contain-intrinsic-size: auto none auto 480px; }
+.island-canvas canvas { width: 100%; height: 100%; }
+.island-interaction-hint { position: absolute; right: 16px; bottom: 8px; display: flex; align-items: center; gap: 6px; color: #6e7f72; font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; pointer-events: none; }
+.scene-coordinate { position: absolute; color: #4f6053; font-family: var(--font-mono); font-size: 8px; line-height: 1.6; letter-spacing: .08em; pointer-events: none; }
+.coordinate-a { top: 16px; right: 18px; text-align: right; }
+.coordinate-b { bottom: 24px; left: 0; }
+.island-fallback { height: 100%; min-height: 340px; display: grid; place-content: center; justify-items: center; gap: 20px; color: var(--lime); text-align: center; }
+.island-fallback > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; font-family: var(--font-mono); font-size: 11px; }
+.island-fallback p { color: var(--muted); font-size: 12px; }
+
+@media (max-width: 1100px) {
+  .learning-island { inset-bottom: 72px; }
+  .scene-coordinate { display: none; }
+}
+
+@media (max-width: 600px) {
+  .learning-island { inset: 36px -12px 77px; }
+  .island-canvas { min-height: 300px; }
+  .island-interaction-hint { right: 22px; bottom: 6px; font-size: 7px; }
+}

@@ -1,0 +1,9 @@
+@import './styles/tokens.css';
+@import './styles/global.css';
+@import './styles/layout.css';
+@import './styles/island.css';
+@import './styles/arena.css';
+@import './styles/views.css';
+@import './styles/dialogs.css';
+
+@import './styles/learning.css';
