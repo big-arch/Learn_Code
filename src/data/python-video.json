@@ -1,0 +1,452 @@
+{
+  "sources": [
+    {
+      "id": "stashchuk",
+      "videoId": "cfJrtx-k96U",
+      "title": "Python — полный курс [15 часов]",
+      "author": "Богдан Сташчук",
+      "url": "https://www.youtube.com/watch?v=cfJrtx-k96U&t=59s",
+      "status": "Расшифровка получена; разобраны темы практикума. Таймкоды взяты из оглавления автора.",
+      "evidence": "transcript",
+      "retrieved": "2026-11-08"
+    },
+    {
+      "id": "ilyin",
+      "videoId": "wDmPgXhlDIg",
+      "title": "Python — полный курс для начинающих",
+      "author": "Александр Ильин",
+      "url": "https://www.youtube.com/watch?v=wDmPgXhlDIg",
+      "status": "Проверены доступные главы. Текстовый разбор этого курса пока не добавлен: расшифровка недоступна.",
+      "evidence": "chapters-only",
+      "retrieved": "2026-11-08"
+    }
+  ],
+  "references": {
+    "python-v2-01": [
+      {
+        "source": "stashchuk",
+        "start": 3859,
+        "label": "Встроенные функции"
+      },
+      {
+        "source": "ilyin",
+        "start": 180,
+        "label": "Функция print"
+      }
+    ],
+    "python-v2-02": [
+      {
+        "source": "stashchuk",
+        "start": 9542,
+        "label": "Динамическая типизация"
+      },
+      {
+        "source": "ilyin",
+        "start": 352,
+        "label": "Переменные"
+      }
+    ],
+    "python-v2-03": [
+      {
+        "source": "stashchuk",
+        "start": 12477,
+        "label": "Целые числа"
+      },
+      {
+        "source": "ilyin",
+        "start": 605,
+        "label": "Числа: int и float"
+      }
+    ],
+    "python-v2-04": [
+      {
+        "source": "stashchuk",
+        "start": 14427,
+        "label": "Конвертация типов"
+      }
+    ],
+    "python-v2-05": [
+      {
+        "source": "stashchuk",
+        "start": 11207,
+        "label": "Строки"
+      },
+      {
+        "source": "ilyin",
+        "start": 2288,
+        "label": "Строки"
+      }
+    ],
+    "python-v2-06": [
+      {
+        "source": "stashchuk",
+        "start": 41651,
+        "label": "Соединение строк"
+      }
+    ],
+    "python-v2-07": [
+      {
+        "source": "stashchuk",
+        "start": 39244,
+        "label": "Ложные значения"
+      },
+      {
+        "source": "ilyin",
+        "start": 1368,
+        "label": "Булевый тип"
+      }
+    ],
+    "python-v2-08": [
+      {
+        "source": "stashchuk",
+        "start": 46764,
+        "label": "Условные инструкции"
+      },
+      {
+        "source": "ilyin",
+        "start": 1726,
+        "label": "Условные операторы"
+      }
+    ],
+    "python-v2-09": [
+      {
+        "source": "stashchuk",
+        "start": 27812,
+        "label": "Встроенная функция zip"
+      }
+    ],
+    "python-v2-10": [
+      {
+        "source": "stashchuk",
+        "start": 26336,
+        "label": "Диапазоны range"
+      }
+    ],
+    "python-v2-11": [
+      {
+        "source": "stashchuk",
+        "start": 53817,
+        "label": "Цикл while"
+      }
+    ],
+    "python-v2-12": [
+      {
+        "source": "stashchuk",
+        "start": 28432,
+        "label": "Изменение объектов"
+      }
+    ],
+    "python-v2-13": [
+      {
+        "source": "stashchuk",
+        "start": 40787,
+        "label": "Распаковка словаря"
+      }
+    ],
+    "python-v2-14": [
+      {
+        "source": "stashchuk",
+        "start": 24580,
+        "label": "Методы множеств"
+      }
+    ],
+    "python-v2-15": [
+      {
+        "source": "stashchuk",
+        "start": 54871,
+        "label": "Списковые включения"
+      }
+    ],
+    "python-v2-16": [
+      {
+        "source": "stashchuk",
+        "start": 33403,
+        "label": "Именованные аргументы"
+      }
+    ],
+    "python-v2-17": [
+      {
+        "source": "stashchuk",
+        "start": 36207,
+        "label": "Области видимости"
+      }
+    ],
+    "python-v2-18": [
+      {
+        "source": "stashchuk",
+        "start": 43012,
+        "label": "Обработка ошибок"
+      }
+    ]
+  },
+  "labs": [
+    {
+      "id": "names",
+      "lessonId": "python-v2-02",
+      "source": "stashchuk",
+      "title": "Одно имя — разные значения",
+      "idea": "Тип принадлежит объекту. Одно имя можно связать сначала со строкой, а затем с числом. Присваивание другого значения не превращает старую строку в число: имя начинает ссылаться на новый объект.",
+      "pitfall": "Не путай присваивание и преобразование: запись amount = 7 сама по себе не преобразует другие переменные со строкой \"7\".",
+      "task": "Мира получила строку \"7\". Сохрани её как original, затем преобразуй amount в целое число и прибавь 5. Выведи amount. original должен остаться строкой \"7\".",
+      "starter": "amount = \"7\"\noriginal = amount\n# Преобразуй amount, прибавь 5 и выведи результат\n",
+      "solution": "amount = \"7\"\noriginal = amount\namount = int(amount) + 5\nprint(amount)",
+      "checks": [
+        {
+          "label": "Получилось целое число 12",
+          "expression": "type(amount) is int and amount == 12"
+        },
+        {
+          "label": "Исходная строка сохранена",
+          "expression": "type(original) is str and original == \"7\""
+        },
+        {
+          "label": "Выведено 12",
+          "expression": "__output__.strip() == \"12\""
+        }
+      ],
+      "hint": "int(amount) возвращает число; сохрани результат сложения обратно в amount.",
+      "question": "Изменится ли original после amount = int(amount)?",
+      "answer": "Нет. original по-прежнему ссылается на строку \"7\". Имя amount теперь связано с целым числом."
+    },
+    {
+      "id": "truth",
+      "lessonId": "python-v2-07",
+      "source": "stashchuk",
+      "title": "Непустая строка тоже истинна",
+      "idea": "При проверке условия Python учитывает истинность значения. Пустая строка, пустой список, None и ноль ложны. Непустая строка истинна даже тогда, когда внутри написано \"False\" или \"0\".",
+      "pitfall": "bool(\"False\") даёт True. Если нужен ответ человека, сравнивай нормализованный текст с ожидаемым словом.",
+      "task": "В radio приходит \"  ДА  \". Создай accepted: убери пробелы, переведи строку в нижний регистр и сравни с \"да\". Создай rejected таким же сравнением для строки \"нет\". Выведи accepted.",
+      "starter": "radio = \"  ДА  \"\nnegative = \"нет\"\n# Создай accepted и rejected через сравнение с \"да\"\n",
+      "solution": "radio = \"  ДА  \"\nnegative = \"нет\"\naccepted = radio.strip().lower() == \"да\"\nrejected = negative.strip().lower() == \"да\"\nprint(accepted)",
+      "checks": [
+        {
+          "label": "Подтверждение распознано",
+          "expression": "accepted is True"
+        },
+        {
+          "label": "Отказ не стал подтверждением",
+          "expression": "rejected is False"
+        },
+        {
+          "label": "Выведено True",
+          "expression": "__output__.strip() == \"True\""
+        }
+      ],
+      "hint": "Сначала radio.strip().lower(), затем сравнение == \"да\".",
+      "question": "Почему bool(\"нет\") не подходит?",
+      "answer": "Это непустая строка, поэтому результат True. bool проверяет пустоту, а не смысл слова."
+    },
+    {
+      "id": "zip",
+      "lessonId": "python-v2-09",
+      "source": "stashchuk",
+      "title": "Соедини имена и запасы",
+      "idea": "zip объединяет элементы нескольких последовательностей в пары. Это удобно, когда имена жителей и запасы лежат в разных списках. list(zip(...)) превращает результат в список пар.",
+      "pitfall": "Обычный zip заканчивается вместе с самой короткой последовательностью. Лишние элементы длинной последовательности не попадут в результат.",
+      "task": "Собери manifest из пар имён и запасов с помощью zip. Выведи manifest. Затем собери short_manifest, передав только первый запас через fuel[:1].",
+      "starter": "names = [\"Мира\", \"Тим\"]\nfuel = [4, 9]\n# Создай manifest и short_manifest\n",
+      "solution": "names = [\"Мира\", \"Тим\"]\nfuel = [4, 9]\nmanifest = list(zip(names, fuel))\nshort_manifest = list(zip(names, fuel[:1]))\nprint(manifest)",
+      "checks": [
+        {
+          "label": "Получились две правильные пары",
+          "expression": "manifest == [(\"Мира\", 4), (\"Тим\", 9)]"
+        },
+        {
+          "label": "Короткий список ограничил zip",
+          "expression": "short_manifest == [(\"Мира\", 4)]"
+        }
+      ],
+      "hint": "list(zip(names, fuel)) создаст список кортежей — пар в круглых скобках.",
+      "question": "Сколько пар получится для трёх имён и двух запасов?",
+      "answer": "Две. Без дополнительных параметров zip останавливается на самой короткой последовательности."
+    },
+    {
+      "id": "copy",
+      "lessonId": "python-v2-12",
+      "source": "stashchuk",
+      "title": "Собери отдельный рюкзак",
+      "idea": "Запись spare = backpack даёт второе имя тому же списку. Изменения через одно имя видны через другое. Для отдельного списка можно использовать backpack.copy().",
+      "pitfall": "copy() делает поверхностную копию: вложенные списки остаются общими. В этой задаче элементы — строки, поэтому отдельного внешнего списка достаточно.",
+      "task": "Скопируй backpack в spare. Добавь \"ключ\" только в spare и выведи длину spare. Исходный backpack должен остаться без изменений.",
+      "starter": "backpack = [\"фонарь\", \"карта\"]\nspare = backpack\n# Исправь копирование и добавь ключ\n",
+      "solution": "backpack = [\"фонарь\", \"карта\"]\nspare = backpack.copy()\nspare.append(\"ключ\")\nprint(len(spare))",
+      "checks": [
+        {
+          "label": "Исходный рюкзак не изменился",
+          "expression": "backpack == [\"фонарь\", \"карта\"]"
+        },
+        {
+          "label": "Ключ только в отдельной копии",
+          "expression": "spare == [\"фонарь\", \"карта\", \"ключ\"] and spare is not backpack"
+        },
+        {
+          "label": "Выведена длина 3",
+          "expression": "__output__.strip() == \"3\""
+        }
+      ],
+      "hint": "Замени spare = backpack на spare = backpack.copy().",
+      "question": "Почему spare = backpack не является копированием списка?",
+      "answer": "Присваивание связывает ещё одно имя с тем же объектом. append изменит общий список."
+    },
+    {
+      "id": "dictionary",
+      "lessonId": "python-v2-13",
+      "source": "stashchuk",
+      "title": "Обнови настройки без потери оригинала",
+      "idea": "Выражение {**base, \"light\": True} создаёт новый словарь: сначала распаковывает пары base, затем задаёт light. Если ключ уже был, более позднее значение заменяет раннее в новом словаре.",
+      "pitfall": "Распаковка не делает глубокую копию. Вложенные изменяемые значения могут остаться общими с исходным словарём.",
+      "task": "Создай night на основе base с помощью **. В night light должен стать True, а fuel остаться 10. base менять нельзя. Выведи night[\"light\"].",
+      "starter": "base = {\"fuel\": 10, \"light\": False}\n# Создай night, сохранив base\n",
+      "solution": "base = {\"fuel\": 10, \"light\": False}\nnight = {**base, \"light\": True}\nprint(night[\"light\"])",
+      "checks": [
+        {
+          "label": "Исходные настройки сохранены",
+          "expression": "base == {\"fuel\": 10, \"light\": False}"
+        },
+        {
+          "label": "Созданы новые настройки",
+          "expression": "night == {\"fuel\": 10, \"light\": True} and night is not base"
+        },
+        {
+          "label": "Выведено True",
+          "expression": "__output__.strip() == \"True\""
+        }
+      ],
+      "hint": "Внутри нового словаря сначала **base, затем \"light\": True.",
+      "question": "Какое значение останется при повторении ключа?",
+      "answer": "Последнее. Поэтому настройку light ставим после распаковки base."
+    },
+    {
+      "id": "sets",
+      "lessonId": "python-v2-14",
+      "source": "stashchuk",
+      "title": "Чего не хватает мастерской",
+      "idea": "Множество хранит уникальные элементы. Разность required - available даёт нужные элементы, которых ещё нет. Пересечение required & available показывает уже собранные.",
+      "pitfall": "На порядок элементов множества полагаться нельзя. Для стабильного вывода строк можно использовать sorted().",
+      "task": "Найди missing и ready для мастерской. Выведи sorted(missing). Понадобятся разность и пересечение множеств.",
+      "starter": "required = {\"дерево\", \"камень\", \"верёвка\"}\navailable = {\"камень\", \"вода\"}\n# Вычисли missing и ready\n",
+      "solution": "required = {\"дерево\", \"камень\", \"верёвка\"}\navailable = {\"камень\", \"вода\"}\nmissing = required - available\nready = required & available\nprint(sorted(missing))",
+      "checks": [
+        {
+          "label": "Найдены недостающие материалы",
+          "expression": "missing == {\"дерево\", \"верёвка\"}"
+        },
+        {
+          "label": "Найдены готовые материалы",
+          "expression": "ready == {\"камень\"}"
+        }
+      ],
+      "hint": "Из required вычти available. Для ready используй &.",
+      "question": "Можно ли проверять ответ по порядку элементов set?",
+      "answer": "Нет. Сравнивай сами множества, а для понятного человеку вывода сортируй элементы."
+    },
+    {
+      "id": "comprehension",
+      "lessonId": "python-v2-15",
+      "source": "stashchuk",
+      "title": "Отбери и заряди кристаллы",
+      "idea": "Списковое включение соединяет перебор, преобразование и необязательный фильтр. В [x * 2 for x in values if x > 0] условие решает, брать ли элемент, а выражение слева — что положить в новый список.",
+      "pitfall": "Результат — новый список. Исходные values не изменяются. Сложную логику лучше оставить обычным циклом.",
+      "task": "Из energy возьми только положительные значения и удвой их. Сохрани новый список в charged, выведи его. energy не меняй.",
+      "starter": "energy = [0, 3, -2, 5]\n# Создай charged одним списковым включением\n",
+      "solution": "energy = [0, 3, -2, 5]\ncharged = [value * 2 for value in energy if value > 0]\nprint(charged)",
+      "checks": [
+        {
+          "label": "Получились заряды 6 и 10",
+          "expression": "charged == [6, 10]"
+        },
+        {
+          "label": "Исходные измерения сохранены",
+          "expression": "energy == [0, 3, -2, 5]"
+        }
+      ],
+      "hint": "Слева value * 2; справа for value in energy; в конце if value > 0.",
+      "question": "Что произойдёт с нулевым и отрицательным значениями?",
+      "answer": "Условие value > 0 их отсеет: выражение value * 2 для результата будет использовано только для положительных значений."
+    },
+    {
+      "id": "arguments",
+      "lessonId": "python-v2-16",
+      "source": "stashchuk",
+      "title": "Передай параметры по именам",
+      "idea": "Позиционные аргументы сопоставляются параметрам по порядку, именованные — по имени. Поэтому launch(fuel=8, name=\"Мира\") может быть понятнее длинного набора позиционных значений.",
+      "pitfall": "Обычный позиционный аргумент нельзя писать после именованного. Значение по умолчанию применяется только если аргумент не передан.",
+      "task": "Допиши launch(name, fuel=5): функция должна возвращать строку \"имя:запас\". В message вызови её с именованными аргументами fuel=8 и name=\"Мира\". Выведи message.",
+      "starter": "def launch(name, fuel=5):\n    return \"\"\n\n# Создай message и выведи его\n",
+      "solution": "def launch(name, fuel=5):\n    return f\"{name}:{fuel}\"\n\nmessage = launch(fuel=8, name=\"Мира\")\nprint(message)",
+      "checks": [
+        {
+          "label": "Вызов с именами работает",
+          "expression": "message == \"Мира:8\" and launch(fuel=3, name=\"Лея\") == \"Лея:3\""
+        },
+        {
+          "label": "Работает значение по умолчанию",
+          "expression": "launch(\"Тим\") == \"Тим:5\""
+        },
+        {
+          "label": "Выведено сообщение",
+          "expression": "__output__.strip() == \"Мира:8\""
+        }
+      ],
+      "hint": "Верни f\"{name}:{fuel}\". Имя аргумента указывается слева от = в вызове.",
+      "question": "Чему равен fuel при launch(\"Тим\")?",
+      "answer": "Пяти: второй аргумент не передан, поэтому используется значение по умолчанию."
+    },
+    {
+      "id": "scope",
+      "lessonId": "python-v2-17",
+      "source": "stashchuk",
+      "title": "Верни результат из мастерской",
+      "idea": "Локальные имена функции живут в её области видимости. Если создать внутри fuel = 8, одноимённая переменная снаружи не изменится. Передавать данные наружу удобно через return.",
+      "pitfall": "Не используй global только ради получения результата. Возвращаемое значение делает зависимость от входных данных явной.",
+      "task": "Допиши refuel(fuel), чтобы она прибавляла 3 и возвращала результат. Сохрани refuel(fuel) в after, выведи after. Внешний fuel должен остаться 5.",
+      "starter": "fuel = 5\n\ndef refuel(fuel):\n    # Прибавь 3 и верни результат\n    return fuel\n\nafter = refuel(fuel)\nprint(after)",
+      "solution": "fuel = 5\n\ndef refuel(fuel):\n    fuel = fuel + 3\n    return fuel\n\nafter = refuel(fuel)\nprint(after)",
+      "checks": [
+        {
+          "label": "Возвращён новый запас",
+          "expression": "after == 8 and refuel(10) == 13"
+        },
+        {
+          "label": "Внешнее имя не изменено",
+          "expression": "fuel == 5"
+        },
+        {
+          "label": "Выведено 8",
+          "expression": "__output__.strip() == \"8\""
+        }
+      ],
+      "hint": "Локально измени fuel, затем return fuel. Снаружи результат уже сохраняется в after.",
+      "question": "Почему наружный fuel остаётся равен 5?",
+      "answer": "Параметр fuel — локальное имя. В функции оно связывается с новым числом; внешнее имя это присваивание не меняет."
+    },
+    {
+      "id": "errors",
+      "lessonId": "python-v2-18",
+      "source": "stashchuk",
+      "title": "Отлови ожидаемую ошибку",
+      "idea": "try содержит действие, которое может завершиться ошибкой. except ValueError обрабатывает именно ошибки неподходящего значения, например int(\"туман\"). Другие типы ошибок не стоит скрывать без причины.",
+      "pitfall": "Общий except может спрятать ошибку в логике. Обрабатывай ожидаемый тип, а неожиданные ошибки исправляй.",
+      "task": "Напиши parse_energy(text): верни int(text), а при ValueError верни 0. Выведи результат для \"туман\". Строка \"12\" должна давать число 12.",
+      "starter": "def parse_energy(text):\n    return int(text)\n\nprint(parse_energy(\"туман\"))",
+      "solution": "def parse_energy(text):\n    try:\n        return int(text)\n    except ValueError:\n        return 0\n\nprint(parse_energy(\"туман\"))",
+      "checks": [
+        {
+          "label": "Неподходящая строка обработана",
+          "expression": "parse_energy(\"туман\") == 0 and parse_energy(\"\") == 0"
+        },
+        {
+          "label": "Числа не потерялись",
+          "expression": "parse_energy(\"12\") == 12 and parse_energy(\"-3\") == -3"
+        },
+        {
+          "label": "Выведено 0",
+          "expression": "__output__.strip() == \"0\""
+        }
+      ],
+      "hint": "Помести int(text) в try и добавь except ValueError с return 0.",
+      "question": "Перехватит ли except ValueError ошибку NameError?",
+      "answer": "Нет. Обработчик подходит только для указанного типа исключения и его подклассов."
+    }
+  ]
+}

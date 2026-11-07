@@ -82,3 +82,36 @@ test('Python course: actual interpreter, all lessons and failures', async t => {
     assert.ok(r.tests.some(v => !v.passed))
   })
 })
+
+const video = JSON.parse(await readFile(new URL('../src/data/python-video.json', import.meta.url), 'utf8'))
+test('Video practice: real Python solutions and incomplete attempts', async t => {
+  for (const lab of video.labs) {
+    await t.test(lab.id + ' solution passes with a real execution trace', () => {
+      const result = run(lab.solution, lab.checks)
+      assert.equal(result.error, '', JSON.stringify(result))
+      assert.ok(result.tests.length && result.tests.every(check => check.passed), JSON.stringify(result))
+      assert.ok(result.trace.length > 0)
+    })
+    await t.test(lab.id + ' starter does not falsely pass', () => {
+      const result = run(lab.starter, lab.checks)
+      assert.ok(result.error || result.tests.some(check => !check.passed))
+    })
+  }
+  for (const [id, from, to] of [
+    ['copy', 'backpack.copy()', 'backpack'],
+    ['truth', 'negative.strip().lower() == "да"', 'bool(negative)'],
+    ['sets', 'required - available', 'available - required'],
+    ['comprehension', 'if value > 0', 'if value >= 0'],
+    ['scope', 'fuel + 3', '8'],
+    ['arguments', 'fuel=5', 'fuel=0'],
+    ['errors', 'return int(text)', 'return 0'],
+  ]) {
+    await t.test(id + ' detects the concept mistake', () => {
+      const lab = video.labs.find(item => item.id === id)
+      const wrong = lab.solution.replace(from, to)
+      assert.notEqual(wrong, lab.solution)
+      const result = run(wrong, lab.checks)
+      assert.ok(result.error || result.tests.some(check => !check.passed), JSON.stringify(result))
+    })
+  }
+})

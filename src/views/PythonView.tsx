@@ -8,6 +8,7 @@ import { useProgress } from '../state/useProgress'
 import { ProgramStage } from '../components/ProgramStage'
 import { CodeEditor } from '../components/CodeEditor'
 import { BookReading } from '../components/BookReading'
+import { VideoCourseSources, VideoLesson } from '../components/VideoLesson'
 
 export function PythonView({ startChapter = null, onAdventure }: { startChapter?: number | null; onAdventure?: () => void }) {
   const { progress }=useProgress()
@@ -19,6 +20,7 @@ export function PythonView({ startChapter = null, onAdventure }: { startChapter?
     <div className="course-topline"><span className="section-kicker">ПУТЬ ИССЛЕДОВАТЕЛЯ / PYTHON</span><span>{completed} / 24 урока</span></div>
     <div className="python-heading"><div><h1>От первой строки<br/>к своей программе.</h1><p>24 урока · 6 глав · теория, практика и собственный проект</p></div><div className="course-progress-ring" style={{'--completion':completed/24*100+'%'} as React.CSSProperties}><span>{Math.round(completed/24*100)}<small>%</small></span></div></div>
     {onAdventure&&<button type="button" className="course-adventure-link" onClick={onAdventure}>Закрепить первые 4 темы в игре «Остров Тихой бухты» <ArrowRight size={17}/></button>}
+    <VideoCourseSources onSelect={select}/>
     <div className="python-layout">
       <details className="syllabus" open><summary><BookOpen size={18}/> Программа курса</summary>
         {pythonChapters.map((chapter,c)=><section key={chapter.title}><h2><span>0{c+1}</span>{chapter.title}</h2>{pythonLessons.map((l,i)=>l.chapter===c&&<button type="button" key={l.id} className={i===index?'active':''} aria-current={i===index?'step':undefined} onClick={()=>select(i)}><span>{progress.completed.includes(l.id)?<Check size={14}/>:String(i+1).padStart(2,'0')}</span><span>{l.title.split(': ').at(-1)}</span></button>)}</section>)}
@@ -61,6 +63,7 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
       <div className="book-walkthrough"><h3>Разберём пример по шагам</h3><ol>{lesson.reading.walkthrough.map(step=><li key={step}>{step}</li>)}</ol><button className="button secondary" type="button" onClick={()=>{setTab('code');void run(true)}}>Посмотреть выполнение примера <ArrowRight size={17}/></button></div>
       <div className="book-experiment"><h3>Маленький эксперимент</h3><p>{lesson.reading.experiment}</p><details><summary>Проверить своё объяснение</summary><p>{lesson.reading.answer}</p></details></div>
       <BookReading reading={lesson.reading}/>
+      <VideoLesson key={lesson.id} lessonId={lesson.id}/>
       <div className="concept-callout"><BookOpen size={20}/><p><strong>Попробуй объяснить своими словами.</strong> Что получает программа на вход, что делает и что получится? Затем переходи к вопросу.</p></div>
       <button className="button primary" type="button" onClick={()=>setTab('quiz')}>Проверить понимание <ArrowRight size={17}/></button>
     </section>}
