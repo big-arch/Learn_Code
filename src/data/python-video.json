@@ -16,9 +16,11 @@
       "title": "Python — полный курс для начинающих",
       "author": "Александр Ильин",
       "url": "https://www.youtube.com/watch?v=wDmPgXhlDIg",
-      "status": "Проверены доступные главы. Текстовый разбор этого курса пока не добавлен: расшифровка недоступна.",
-      "evidence": "chapters-only",
-      "retrieved": "2026-11-08"
+      "status": "Получены русские автосубтитры. Разобраны модули, JSON, работа с файлами и классы; код примеров проверен Python.",
+      "evidence": "automatic-captions",
+      "retrieved": "2026-11-08",
+      "captionLanguage": "ru",
+      "captionKind": "asr"
     }
   ],
   "references": {
@@ -176,6 +178,34 @@
         "source": "stashchuk",
         "start": 43012,
         "label": "Обработка ошибок"
+      }
+    ],
+    "python-v2-19": [
+      {
+        "source": "ilyin",
+        "start": 10299,
+        "label": "Импорты и пространство имён"
+      }
+    ],
+    "python-v2-20": [
+      {
+        "source": "ilyin",
+        "start": 18043,
+        "label": "Менеджеры контекста: with open"
+      }
+    ],
+    "python-v2-21": [
+      {
+        "source": "ilyin",
+        "start": 10044,
+        "label": "JSON: упаковка и распаковка"
+      }
+    ],
+    "python-v2-22": [
+      {
+        "source": "ilyin",
+        "start": 13425,
+        "label": "Классы, экземпляры и self"
       }
     ]
   },
@@ -447,6 +477,122 @@
       "hint": "Помести int(text) в try и добавь except ValueError с return 0.",
       "question": "Перехватит ли except ValueError ошибку NameError?",
       "answer": "Нет. Обработчик подходит только для указанного типа исключения и его подклассов."
+    },
+    {
+      "id": "modules",
+      "lessonId": "python-v2-19",
+      "source": "ilyin",
+      "title": "Возьми инструмент из модуля",
+      "idea": "Модуль помогает разделять программу на части и повторно использовать код. После import math имя math доступно в текущем модуле, а его функцию вызывают через точку: math.ceil(...). В видео эта идея показана на модуле random; здесь потренируемся на расчёте припасов.",
+      "pitfall": "import math не создаёт отдельного имени ceil. Либо пиши math.ceil, либо явно импортируй функцию: from math import ceil. Избегай import *, который затрудняет понимание происхождения имён.",
+      "task": "Для доставки нужно 17 единиц топлива, один контейнер вмещает 5. Импортируй math и вычисли containers через math.ceil. Выведи количество полных или неполных контейнеров: 4.",
+      "starter": "# Импортируй math\nfuel = 17\ncapacity = 5\n# Рассчитай containers с округлением вверх\n",
+      "solution": "import math\nfuel = 17\ncapacity = 5\ncontainers = math.ceil(fuel / capacity)\nprint(containers)",
+      "checks": [
+        {
+          "label": "Модуль math импортирован",
+          "expression": "math.__name__ == \"math\""
+        },
+        {
+          "label": "Частичный контейнер учтён",
+          "expression": "type(containers) is int and containers == 4"
+        },
+        {
+          "label": "Выведено 4",
+          "expression": "__output__.strip() == \"4\""
+        }
+      ],
+      "hint": "math.ceil округляет вверх: 17 / 5 равно 3.4, значит нужны четыре контейнера.",
+      "question": "Почему простого int(17 / 5) недостаточно?",
+      "answer": "Получится 3. Для оставшихся двух единиц топлива нужен ещё один контейнер, поэтому требуется округление вверх."
+    },
+    {
+      "id": "context",
+      "lessonId": "python-v2-20",
+      "source": "ilyin",
+      "title": "Сохрани журнал и закрой файл",
+      "idea": "У файла есть парные действия: открыть и закрыть. Конструкция with open(...) as file закрывает файл при выходе из блока, в том числе при исключении. Внутри блока читают или записывают данные.",
+      "pitfall": "Режим \"w\" перезаписывает существующий файл. После выхода из with объект файла закрыт: для нового чтения открой файл снова. В нашей песочнице файлы живут только в пределах одного запуска.",
+      "task": "Запиши строку \"Маяк работает\" в journal.txt через with open с encoding=\"utf-8\". Затем открой файл для чтения и сохрани текст в restored. Выведи restored. Назови объекты файлов writer и reader.",
+      "starter": "# Запиши журнал через with open(...) as writer\n# Прочитай его через with open(...) as reader\n",
+      "solution": "with open(\"journal.txt\", \"w\", encoding=\"utf-8\") as writer:\n    writer.write(\"Маяк работает\")\n\nwith open(\"journal.txt\", \"r\", encoding=\"utf-8\") as reader:\n    restored = reader.read()\n\nprint(restored)",
+      "checks": [
+        {
+          "label": "Текст восстановлен из файла",
+          "expression": "restored == \"Маяк работает\""
+        },
+        {
+          "label": "Оба файла закрыты после блоков",
+          "expression": "writer.closed and reader.closed"
+        },
+        {
+          "label": "Текст выведен",
+          "expression": "__output__.strip() == \"Маяк работает\""
+        }
+      ],
+      "hint": "В первом with вызови writer.write(...), во втором — reader.read(). print поставь после обоих блоков.",
+      "question": "Нужен ли отдельный close() после with open?",
+      "answer": "Нет: при выходе из блока with файл закрывается автоматически. Это удобно и при нормальном завершении, и при ошибке."
+    },
+    {
+      "id": "json",
+      "lessonId": "python-v2-21",
+      "source": "ilyin",
+      "title": "Передай состояние острова текстом",
+      "idea": "JSON — текстовый формат обмена данными. json.dumps превращает подходящий объект Python в строку, а json.loads читает такую строку обратно. Поэтому словарь и его JSON-представление имеют разные типы: dict и str.",
+      "pitfall": "JSON похож на запись словаря, но это другой формат. Ключи-строки заключаются в двойные кавычки. Не собирай JSON вручную и не используй eval для его чтения.",
+      "task": "Импортируй json. Упакуй state в payload с ensure_ascii=False, затем восстанови словарь в restored через json.loads. Выведи restored[\"name\"]. Исходный state менять нельзя.",
+      "starter": "import json\nstate = {\"name\": \"Мира\", \"fuel\": 7, \"active\": True}\n# Создай payload и restored\n",
+      "solution": "import json\nstate = {\"name\": \"Мира\", \"fuel\": 7, \"active\": True}\npayload = json.dumps(state, ensure_ascii=False)\nrestored = json.loads(payload)\nprint(restored[\"name\"])",
+      "checks": [
+        {
+          "label": "Передаётся JSON-строка с читаемой кириллицей",
+          "expression": "type(payload) is str and \"Мира\" in payload and json.loads(payload) == state"
+        },
+        {
+          "label": "Данные восстановлены отдельным словарём",
+          "expression": "restored == state and restored is not state"
+        },
+        {
+          "label": "Исходные данные и вывод верны",
+          "expression": "state == {\"name\": \"Мира\", \"fuel\": 7, \"active\": True} and __output__.strip() == \"Мира\""
+        }
+      ],
+      "hint": "payload = json.dumps(state, ensure_ascii=False), затем restored = json.loads(payload).",
+      "question": "Почему нельзя сразу обращаться payload[\"name\"]?",
+      "answer": "payload — строка, её индексы — числа. Сначала json.loads(payload) восстановит словарь, затем можно обращаться по ключу."
+    },
+    {
+      "id": "instances",
+      "lessonId": "python-v2-22",
+      "source": "ilyin",
+      "title": "Два робота — два запаса энергии",
+      "idea": "Класс описывает поведение объектов, а экземпляры имеют собственное состояние. Метод __init__ задаёт начальные атрибуты. Параметр self обозначает конкретный экземпляр, для которого вызван метод.",
+      "pitfall": "Изменяемые данные отдельного героя обычно задают через self внутри __init__. Список, созданный как атрибут класса, может оказаться общим для всех экземпляров.",
+      "task": "Допиши класс Robot: в __init__ сохрани energy в self.energy, а spend(amount) должен уменьшать энергию экземпляра. У mira начальная энергия 10, у tim — 7. Потрать у mira 3 и выведи её остаток. tim не должен измениться.",
+      "starter": "class Robot:\n    def __init__(self, energy):\n        pass\n\n    def spend(self, amount):\n        pass\n\nmira = Robot(10)\ntim = Robot(7)\nmira.spend(3)\nprint(mira.energy)",
+      "solution": "class Robot:\n    def __init__(self, energy):\n        self.energy = energy\n\n    def spend(self, amount):\n        self.energy -= amount\n\nmira = Robot(10)\ntim = Robot(7)\nmira.spend(3)\nprint(mira.energy)",
+      "checks": [
+        {
+          "label": "Энергия Миры уменьшилась",
+          "expression": "mira.energy == 7"
+        },
+        {
+          "label": "Энергия Тима независима",
+          "expression": "tim.energy == 7 and mira is not tim"
+        },
+        {
+          "label": "Конструктор принимает другое значение",
+          "expression": "Robot(20).energy == 20"
+        },
+        {
+          "label": "Выведено 7",
+          "expression": "__output__.strip() == \"7\""
+        }
+      ],
+      "hint": "В __init__: self.energy = energy. В spend: self.energy -= amount.",
+      "question": "Кого обозначает self во время mira.spend(3)?",
+      "answer": "Экземпляр mira. Вызов меняет именно его energy, а не атрибут объекта tim."
     }
   ]
 }

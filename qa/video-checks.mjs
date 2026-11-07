@@ -9,7 +9,7 @@ export default async function videoChecks(page) {
   await page.getByRole('button', { name: 'Начать с нуля', exact: true }).click()
   const data = await page.evaluate(async () => (await import('/src/data/python-video.json')).default)
   await page.locator('.video-course-sources>summary').click()
-  check((await page.locator('.video-source-grid').innerText()).includes('расшифровка недоступна'), 'second course is not represented as a completed transcript analysis')
+  check((await page.locator('.video-source-grid').innerText()).includes('русские автосубтитры'), 'second course identifies automatic caption provenance')
   await page.locator('.video-course-sources>summary').click()
   for (const lab of data.labs) {
     await page.locator('.syllabus button').nth(Number(lab.lessonId.slice(-2)) - 1).click()

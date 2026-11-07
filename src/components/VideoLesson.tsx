@@ -16,7 +16,7 @@ const timestamp = (seconds: number) => {
 
 export function VideoCourseSources({ onSelect }: { onSelect: (index: number) => void }) {
   return <details className="video-course-sources">
-    <summary><Film size={20} aria-hidden="true" /><span>Два видеокурса рядом с практикой <small>10 дополнительных тренировок по разобранным темам</small></span><ChevronDown size={18} aria-hidden="true" /></summary>
+    <summary><Film size={20} aria-hidden="true" /><span>Два видеокурса рядом с практикой <small>{data.labs.length} дополнительных тренировок по разобранным темам</small></span><ChevronDown size={18} aria-hidden="true" /></summary>
     <div className="video-source-grid">{data.sources.map(source => <article key={source.id}>
       <span>{source.author}</span><h3>{source.title}</h3><p>{source.status}</p>
       <a href={source.url} target="_blank" rel="noreferrer">Открыть курс на YouTube <ArrowUpRight size={17} aria-hidden="true" /></a>
@@ -37,7 +37,7 @@ export function VideoLesson({ lessonId }: { lessonId: string }) {
         const source = data.sources.find(item => item.id === ref.source)!
         return <a key={ref.source} href={`https://www.youtube.com/watch?v=${source.videoId}&t=${ref.start}s`} target="_blank" rel="noreferrer"><span><strong>{source.author}</strong><span>{ref.label}</span></span><time>{timestamp(ref.start)}</time><ArrowUpRight size={18} aria-hidden="true" /></a>
       })}</div>
-      <p className="video-editorial-note">Таймкоды — из оглавлений авторов. {lab ? 'Источник темы практикума — курс Богдана Сташчука. Объяснения и упражнения ниже написаны для КОД:АРЕНЫ.' : 'Видео открывается на YouTube в новой вкладке.'}</p>
+      <p className="video-editorial-note">Таймкоды — из оглавлений и расшифровок. {lab ? `Источник темы: ${data.sources.find(source => source.id === lab.source)?.author}. Объяснения и упражнения ниже написаны для КОД:АРЕНЫ.` : 'Видео открывается на YouTube в новой вкладке.'}</p>
       {lab && open && <VideoLab key={lab.id} lab={lab} />}
     </div>
   </details>

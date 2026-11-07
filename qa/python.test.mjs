@@ -99,6 +99,10 @@ test('Video practice: real Python solutions and incomplete attempts', async t =>
   }
   for (const [id, from, to] of [
     ['copy', 'backpack.copy()', 'backpack'],
+    ['modules', 'math.ceil(fuel / capacity)', 'int(fuel / capacity)'],
+    ['json', 'json.loads(payload)', 'state'],
+    ['context', 'restored = reader.read()', 'restored = "Потерянный журнал"'],
+    ['instances', 'self.energy = energy', 'self.energy = 10'],
     ['truth', 'negative.strip().lower() == "да"', 'bool(negative)'],
     ['sets', 'required - available', 'available - required'],
     ['comprehension', 'if value > 0', 'if value >= 0'],
