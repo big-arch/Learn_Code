@@ -20,6 +20,8 @@ const pythonCourse = JSON.parse(readFileSync(resolve(root, 'src/data/python-cour
 missionIds.push(...pythonCourse.lessons.flatMap(l => [l.id, l.id + '-quiz']))
 const islandQuests = JSON.parse(readFileSync(resolve(root, 'src/data/adventure-quests.json'), 'utf8'))
 missionIds.push(...islandQuests.map(q => q.id))
+const labLevels = JSON.parse(readFileSync(resolve(root, 'src/data/game-lab.json'), 'utf8'))
+missionIds.push(...labLevels.map(l => l.id))
 const record = (v, limit) => v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length <= missionIds.length && Object.entries(v).every(([k,s]) => missionIds.includes(k) && typeof s === 'string' && s.length <= limit)
 export function validState(s) {
   return Boolean(s && typeof s === 'object' && s.version === 1 &&

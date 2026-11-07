@@ -57,11 +57,11 @@ function validateRobot(course: Course, source: string): ValidationResult {
     { label: 'Синтаксис команд', passed: true },
     { label: 'Робот остаётся на поле', passed: inside },
     { label: 'Кристалл достигнут', passed: inside && final.x === course.mission.goal?.x && final.y === course.mission.goal?.y },
-    { label: 'Ровно четыре движения', passed: commands.length === (course.mission.expectedSteps ?? 4) },
+    { label: `Ровно ${course.mission.expectedSteps ?? 4} движения`, passed: commands.length === (course.mission.expectedSteps ?? 4) },
     ...(course.mission.requireLoop ? [{ label: 'Использован цикл', passed: usedLoop }] : []),
   ]
   const ok = tests.every(t => t.passed)
-  return { ok, commands, positions, lines, tests, message: ok ? 'Получилось! Четыре движения привели робота к кристаллу.' : !inside ? 'Команда ' + (positions.length - 1) + ', строка ' + lines[positions.length - 2] + ': робот вышел за край. Координаты поля — от 1 до 3.' : 'Почти! Посмотри на непрошедшие контрольные точки и измени решение.' }
+  return { ok, commands, positions, lines, tests, message: ok ? 'Получилось! Программа привела робота к кристаллу.' : !inside ? 'Команда ' + (positions.length - 1) + ', строка ' + lines[positions.length - 2] + ': робот вышел за край. Координаты поля — от 1 до 3.' : 'Почти! Посмотри на непрошедшие контрольные точки и измени решение.' }
 }
 
 // Use the same CSS parser in the preview and validation; comments aren't styles.

@@ -9,6 +9,7 @@ const navigation: { id: ViewId; label: string; icon: typeof Home }[] = [
   { id: 'courses', label: 'Курсы', icon: BookOpen },
   { id: 'python', label: 'Курс Python', icon: Code2 },
   { id: 'adventure', label: 'Приключение', icon: Compass },
+  { id: 'games', label: 'Мастерская', icon: Sparkles },
   { id: 'arena', label: 'Арена', icon: Gamepad2 },
   { id: 'progress', label: 'Прогресс', icon: BarChart3 },
   { id: 'research', label: 'Справочник', icon: BookOpen },

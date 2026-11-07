@@ -15,6 +15,7 @@ const views: { id: ViewId; label: string }[] = [
   { id: 'home', label: 'Главная' },
   { id: 'courses', label: 'Каталог курсов' },
   { id: 'map', label: 'Карта знаний' },
+  { id: 'games', label: 'Игровая мастерская — Flexbox, Grid, селекторы, робот' },
   { id: 'arena', label: 'Игровая арена' },
   { id: 'progress', label: 'Мой прогресс' },
   { id: 'research', label: 'Справочник Python' },

@@ -2,7 +2,8 @@ import type { ProgressState } from '../types'
 import { allMissions } from '../data/lessons'
 import { pythonProgressItems } from '../data/pythonCourse'
 import { islandProgressItems } from '../data/adventure'
-const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems]
+import labLevels from '../data/game-lab.json'
+const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels]
 
 export const STORAGE_KEY = 'code-arena-progress-v1'
 

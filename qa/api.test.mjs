@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { randomUUID } from 'node:crypto'
@@ -45,6 +45,7 @@ test('SQLite API: validation, isolation, persistence and static hosting', async 
     await t.test('unsupported method and content type',async()=>{ assert.equal((await fetch(origin+'/api/progress',{method:'DELETE',headers})).status,405); assert.equal((await put(state,{'X-Profile-Key':key})).status,415) })
     await t.test('Python lessons, quizzes and Unicode drafts roundtrip',async()=>{ const s={...state,xp:90,completed:['python-v2-01','python-v2-01-quiz'],drafts:{'python-v2-01':'print("Привет, космос!")'}}; assert.equal((await put(s)).status,200); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,s); await put(state) })
     await t.test('island quest progress roundtrip',async()=>{ const s={...state,xp:310,completed:['island-v1-hello','island-v1-gate','island-v1-bridge','island-v1-beacon'],drafts:{'island-v1-gate':'password = "маяк"'}}; assert.equal((await put(s)).status,200); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,s); await put(state) })
+    await t.test('game lab progress and code drafts roundtrip',async()=>{ const levels=JSON.parse(readFileSync('src/data/game-lab.json','utf8')); const s={...state,xp:levels.reduce((n,l)=>n+l.xp,0),completed:levels.map(l=>l.id),drafts:{'lab-v1-flex-01':'justify-content: flex-end;','lab-v1-robot-01':JSON.stringify({language:'go',blocks:[{direction:'right',count:2}]})}}; assert.equal((await put(s)).status,200); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,s); await put(state) })
     await t.test('database survives server restart',async()=>{ await stop(); await start(); assert.deepEqual((await (await fetch(origin+'/api/progress',{headers})).json()).progress,state) })
     await t.test('SPA and missing assets',async()=>{ assert.equal((await fetch(origin+'/')).status,200); assert.equal((await fetch(origin+'/some-route')).status,200); assert.equal((await fetch(origin+'/assets/not-real.js')).status,404) })
   } finally { await stop(); rmSync(dir,{recursive:true,force:true}) }

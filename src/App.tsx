@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { AppShell } from './components/AppShell'
+import { GameLab } from './views/GameLab'
 import { Arena } from './components/Arena'
 import { CommandPalette } from './components/CommandPalette'
 import { CourseDialog } from './components/CourseDialog'
@@ -15,6 +16,7 @@ import { ProgressView } from './views/ProgressView'
 import type { Course, LanguageId, ViewId } from './types'
 
 const titles: Record<ViewId, string> = {
+  games: 'Игровая мастерская — КОД:АРЕНА',
   adventure: 'Остров Тихой бухты — КОД:АРЕНА',
   home: 'КОД:АРЕНА — программирование через игру',
   courses: 'Курсы — КОД:АРЕНА',
@@ -79,8 +81,9 @@ function AppContent() {
       {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onAdventure={()=>navigate('adventure')} />}
       {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} />}
       {view === 'map' && <MapView onStartMission={startMission} />}
+      {view === 'games' && <GameLab />}
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}
-      {view === 'progress' && <ProgressView onStartMission={startMission} />}
+      {view === 'progress' && <ProgressView onStartMission={startMission} onGames={() => navigate('games')} />}
       {view === 'research' && <HandbookView onPython={() => { setPythonStart(null); navigate('python') }} />}
       <CourseDialog course={detailCourse} onClose={() => setDetailCourse(null)} onStart={() => detailCourse && startMission(detailCourse.id)} />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={navigate} onStartMission={startMission} />

@@ -3,13 +3,14 @@ import { Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw
 import { allMissions, getLessons, completedWorlds, nextCourseFor } from '../data/lessons'
 import { islandQuests } from '../data/adventure'
 import { pythonLessons } from '../data/pythonCourse'
+import labLevels from '../data/game-lab.json'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
 import type { LanguageId } from '../types'
 
 const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
 
-export function ProgressView({ onStartMission }: { onStartMission: (id: LanguageId) => void }) {
+export function ProgressView({ onStartMission, onGames }: { onStartMission: (id: LanguageId) => void; onGames: () => void }) {
   const { progress, storageStatus, setSound, setMotion, resetProgress } = useProgress()
   const resetRef = useRef<HTMLDialogElement>(null)
   const level = Math.floor(progress.xp / 500) + 1
@@ -35,7 +36,7 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
       <section className="progress-hero panel">
         <div className="level-emblem"><span>УРОВЕНЬ</span><strong>{String(level).padStart(2, '0')}</strong><div className="level-orbit"><i /><i /></div></div>
         <div className="level-details"><span className="section-kicker">РАЗРАБОТЧИК · {level < 3 ? 'НАЧАЛО ПУТИ' : 'УВЕРЕННЫЙ СТАРТ'}</span><h2>{progress.xp} <span>XP</span></h2><p>{levelXp} из 500 XP до уровня {String(level + 1).padStart(2, '0')}</p><div className="level-progress"><i style={{ width: `${levelXp / 5}%` }} /></div></div>
-        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length + islandQuests.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
+        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length + islandQuests.length + labLevels.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
       </section>
 
       <div className="progress-layout">
@@ -53,6 +54,8 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
           <button className="reset-button" type="button" onClick={() => resetRef.current?.showModal()}><RotateCcw size={15} />Сбросить прогресс</button>
         </section>
       </div>
+
+      <section className="adventure-banner"><Sparkles size={30}/><div><h2>Игровая мастерская: {labLevels.filter(l => progress.completed.includes(l.id)).length} / {labLevels.length}</h2><p>Бухта, сад, теплица и маршруты Искры. Эти открытия учитываются отдельно от вводных миссий по направлениям ниже.</p></div><button type="button" className="button primary" onClick={onGames}>Вернуться в мастерскую</button></section>
 
       <section className="skills-panel panel">
         <div className="panel-heading"><div><span className="section-kicker">ПРОГРЕСС ОБУЧЕНИЯ</span><h2>Навыки по направлениям</h2></div><span className="soft-chip">По реальным действиям</span></div>
