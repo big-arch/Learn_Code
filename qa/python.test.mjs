@@ -35,6 +35,12 @@ test('Python course: actual interpreter, all lessons and failures', async t => {
     await t.test(q.id + ' solution passes', () => { const r=run(q.solution,q.checks,q.stdin); assert.equal(r.error,''); assert.ok(r.tests.every(c=>c.passed),JSON.stringify(r)) })
     await t.test(q.id + ' starter rejected', () => { const r=run(q.starter,q.checks,q.stdin); assert.ok(r.error||r.tests.some(c=>!c.passed)) })
   }
+  for(const greeting of ['привет','ПрИвЕт!!!','Привет, Мира!','  здравствуй, Мира  ']) {
+    await t.test('Mira accepts greeting: '+greeting,()=>{const r=run('print('+JSON.stringify(greeting)+')',island[0].checks);assert.ok(r.tests.every(c=>c.passed),JSON.stringify(r))})
+  }
+  for(const output of ['4','не привет','привет пока']) {
+    await t.test('Mira rejects unrelated output: '+output,()=>{const r=run('print('+JSON.stringify(output)+')',island[0].checks);assert.ok(r.tests.some(c=>!c.passed))})
+  }
   await t.test('island beacon rejects hardcoded energy', () => {const q=island[3],r=run('crystals = int(input())\npower = 12\nprint(power)',q.checks,q.stdin);assert.ok(r.tests.some(c=>!c.passed))})
   await t.test('syntax error identifies student line', () => assert.match(run('print(').error, /SyntaxError, строка 1/))
   await t.test('missing input gets explanatory EOFError', () => assert.match(run('input()').error, /EOFError/))
