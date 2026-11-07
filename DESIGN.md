@@ -17,3 +17,7 @@ Manrope для основного текста и заголовков; JetBrain
 
 ## Motion
 Плавная орбита/вращение сцены, пауза в скрытой вкладке и вне экрана, prefers-reduced-motion. Нет анимации появления целого рабочего экрана. Музыка только после явного действия.
+
+## Adventure island
+
+Daylight, sage grass, turquoise water, cream plaster, terracotta roofs and timber. Orthographic camera follows the player. Quest overlays use parchment colours; the surrounding learning studio retains its dark theme. Controls must stay visible on desktop and mobile.

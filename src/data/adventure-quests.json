@@ -1,0 +1,134 @@
+[
+  {
+    "id": "island-v1-hello",
+    "name": "Первый разговор",
+    "npc": "Мира",
+    "role": "Хранительница острова",
+    "x": -9,
+    "z": 2,
+    "topic": "print · урок 1",
+    "lesson": 0,
+    "xp": 60,
+    "story": "Ты прибыл на остров Тихой бухты. Мира ждёт приветствия: здесь механизмы и жители понимают язык Python. Передай сообщение — и в мастерской появится свет.",
+    "theory": "print() выводит сообщение. Текст нужно заключить в одинаковые кавычки. Python выполняет строки сверху вниз. Введи команду сам: твой вывод станет репликой героя.",
+    "example": "print(\"Доброе утро!\")",
+    "task": "Выведи ровно «Привет, Мира!» — без кавычек в самом сообщении.",
+    "starter": "# Поздоровайся с хранительницей\n",
+    "solution": "print(\"Привет, Мира!\")",
+    "stdin": "",
+    "checks": [
+      {
+        "label": "Мира услышала приветствие",
+        "expression": "__output__.strip() == \"Привет, Мира!\""
+      }
+    ],
+    "reward": "Карта острова",
+    "effect": "В мастерской зажёгся свет. Следуй к Тиму у деревянных ворот.",
+    "hint": "Напиши print(\"Привет, Мира!\") — кавычки обозначают начало и конец строки."
+  },
+  {
+    "id": "island-v1-gate",
+    "name": "Ключ в переменной",
+    "npc": "Тим",
+    "role": "Мастер ворот",
+    "x": -5,
+    "z": 0,
+    "topic": "Переменные · урок 2",
+    "lesson": 1,
+    "xp": 70,
+    "story": "Ворота запоминают ключ по имени password. Тим знает слово, но механизм ждёт переменную. Сохрани слово «маяк» и передай его воротам.",
+    "theory": "Переменная — имя для значения. В password = \"маяк\" знак = присваивает строку переменной. print(password) читает её значение. Если написать print(\"password\"), получится само слово password.",
+    "example": "name = \"Тим\"\nprint(name)",
+    "task": "Создай переменную password со строкой «маяк». Выведи её значение.",
+    "starter": "# Сохрани пароль и передай его воротам\npassword = \"\"\n",
+    "solution": "password = \"маяк\"\nprint(password)",
+    "stdin": "",
+    "checks": [
+      {
+        "label": "Ключ сохранён в password",
+        "expression": "password == \"маяк\""
+      },
+      {
+        "label": "Ворота получили ключ",
+        "expression": "__output__.strip() == \"маяк\""
+      }
+    ],
+    "reward": "Ключ от ворот",
+    "effect": "Створки ворот поднялись. За ними ждёт механик у реки.",
+    "hint": "Сначала password = \"маяк\", затем print(password)."
+  },
+  {
+    "id": "island-v1-bridge",
+    "name": "Мост из вычислений",
+    "npc": "Боб",
+    "role": "Механик у реки",
+    "x": 0.5,
+    "z": 0,
+    "topic": "Числа и операции · урок 3",
+    "lesson": 2,
+    "xp": 80,
+    "story": "Река смыла настил. В каждой из трёх связок по две доски. Боб построит мост, когда программа посчитает весь запас.",
+    "theory": "Числа пишут без кавычек. Оператор * умножает, а + складывает. Результат можно сохранить в переменной и использовать дальше. Это уже маленькая программа расчёта материалов.",
+    "example": "boxes = 4\nin_box = 3\ntotal = boxes * in_box\nprint(total)",
+    "task": "Задай bundles = 3 и per_bundle = 2. Вычисли boards = bundles * per_bundle и выведи boards.",
+    "starter": "bundles = 3\nper_bundle = 2\n# Посчитай boards и выведи результат\n",
+    "solution": "bundles = 3\nper_bundle = 2\nboards = bundles * per_bundle\nprint(boards)",
+    "stdin": "",
+    "checks": [
+      {
+        "label": "Запас рассчитан: 6 досок",
+        "expression": "bundles == 3 and per_bundle == 2 and boards == bundles * per_bundle"
+      },
+      {
+        "label": "Боб получил результат",
+        "expression": "__output__.strip() == \"6\""
+      },
+      {
+        "label": "Расчёт работает и с другим запасом",
+        "expression": "__rerun__({\"bundles\": 4, \"per_bundle\": 3}).get(\"boards\") == 12"
+      }
+    ],
+    "reward": "Набор инструментов",
+    "effect": "Шесть досок легли через реку. Можно добраться до маяка.",
+    "hint": "Знак умножения в Python — *. Сохрани вычисление в boards, затем используй print(boards)."
+  },
+  {
+    "id": "island-v1-beacon",
+    "name": "Огонёк возвращения",
+    "npc": "Лея",
+    "role": "Смотрительница маяка",
+    "x": 8,
+    "z": -2,
+    "topic": "input и int · урок 4",
+    "lesson": 3,
+    "xp": 100,
+    "story": "Маяку нужна энергия. Лея передаёт число кристаллов через input(). Каждый кристалл даёт две единицы энергии. Преврати входной текст в число и зажги огонь.",
+    "theory": "input() читает текст из поля ввода. int() превращает целую числовую строку в число. Без int строка \"6\" * 2 даст \"66\", а число 6 * 2 даст 12.",
+    "example": "apples = int(input())\nprice = apples * 3\nprint(price)",
+    "task": "Считай crystals = int(input()), вычисли power = crystals * 2 и выведи power. Для 6 кристаллов получится 12.",
+    "starter": "# Ввод ниже: количество кристаллов\ncrystals = int(input())\n# Вычисли power и выведи его\n",
+    "solution": "crystals = int(input())\npower = crystals * 2\nprint(power)",
+    "stdin": "6",
+    "checks": [
+      {
+        "label": "Ввод преобразован в целое число",
+        "expression": "type(crystals) is int"
+      },
+      {
+        "label": "Мощность вычислена из количества кристаллов",
+        "expression": "power == crystals * 2 and __output__.strip() == str(power) and power >= 12"
+      },
+      {
+        "label": "Программа читает input()",
+        "expression": "any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == 'input' for n in ast.walk(ast.parse(__source__)))"
+      },
+      {
+        "label": "Расчёт работает с другим числом кристаллов",
+        "expression": "__rerun__({\"crystals\": 7}).get(\"power\") == 14"
+      }
+    ],
+    "reward": "Огонь маяка",
+    "effect": "Маяк снова светит! Ты помог четырём жителям и освоил первые четыре идеи Python.",
+    "hint": "int(input()) превращает ввод в число. Умножь crystals на 2 и сохрани результат в power."
+  }
+]

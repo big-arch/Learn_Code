@@ -18,6 +18,8 @@ const mime = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.
 const missionIds = ['python-first-contact','csharp-gate-protocol','go-cloud-runner','javascript-neon-route','html-interface-awakening','css-frog-signal','python-repeat','javascript-repeat','csharp-repeat','go-repeat','html-first-link','css-center']
 const pythonCourse = JSON.parse(readFileSync(resolve(root, 'src/data/python-course.json'), 'utf8'))
 missionIds.push(...pythonCourse.lessons.flatMap(l => [l.id, l.id + '-quiz']))
+const islandQuests = JSON.parse(readFileSync(resolve(root, 'src/data/adventure-quests.json'), 'utf8'))
+missionIds.push(...islandQuests.map(q => q.id))
 const record = (v, limit) => v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length <= missionIds.length && Object.entries(v).every(([k,s]) => missionIds.includes(k) && typeof s === 'string' && s.length <= limit)
 export function validState(s) {
   return Boolean(s && typeof s === 'object' && s.version === 1 &&

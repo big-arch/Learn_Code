@@ -1,6 +1,6 @@
 export type LanguageId = 'python' | 'csharp' | 'go' | 'javascript' | 'html' | 'css'
 
-export type ViewId = 'home' | 'courses' | 'map' | 'arena' | 'progress' | 'research' | 'python'
+export type ViewId = 'home' | 'courses' | 'map' | 'arena' | 'progress' | 'research' | 'python' | 'adventure'
 
 export type Direction = 'right' | 'left' | 'up' | 'down'
 

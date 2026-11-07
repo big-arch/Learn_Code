@@ -11,6 +11,7 @@ interface CommandPaletteProps {
 }
 
 const views: { id: ViewId; label: string }[] = [
+  { id: 'adventure', label: 'Приключение — Остров Тихой бухты' },
   { id: 'home', label: 'Главная' },
   { id: 'courses', label: 'Каталог курсов' },
   { id: 'map', label: 'Карта знаний' },

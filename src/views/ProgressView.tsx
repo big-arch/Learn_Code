@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw, Settings2, ShieldCheck, Sparkles, Trophy, Volume2, VolumeX, X, Zap } from 'lucide-react'
 import { allMissions, getLessons, completedWorlds, nextCourseFor } from '../data/lessons'
+import { islandQuests } from '../data/adventure'
 import { pythonLessons } from '../data/pythonCourse'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
@@ -34,7 +35,7 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
       <section className="progress-hero panel">
         <div className="level-emblem"><span>УРОВЕНЬ</span><strong>{String(level).padStart(2, '0')}</strong><div className="level-orbit"><i /><i /></div></div>
         <div className="level-details"><span className="section-kicker">РАЗРАБОТЧИК · {level < 3 ? 'НАЧАЛО ПУТИ' : 'УВЕРЕННЫЙ СТАРТ'}</span><h2>{progress.xp} <span>XP</span></h2><p>{levelXp} из 500 XP до уровня {String(level + 1).padStart(2, '0')}</p><div className="level-progress"><i style={{ width: `${levelXp / 5}%` }} /></div></div>
-        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
+        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length + islandQuests.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
       </section>
 
       <div className="progress-layout">

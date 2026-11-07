@@ -6,6 +6,7 @@ import { CommandPalette } from './components/CommandPalette'
 import { CourseDialog } from './components/CourseDialog'
 import { ProgressProvider } from './state/ProgressContext'
 import { CoursesView } from './views/CoursesView'
+import { AdventureView } from './views/AdventureView'
 import { StudioHome } from './views/StudioHome'
 import { PythonView } from './views/PythonView'
 import { HandbookView } from './views/HandbookView'
@@ -14,6 +15,7 @@ import { ProgressView } from './views/ProgressView'
 import type { Course, LanguageId, ViewId } from './types'
 
 const titles: Record<ViewId, string> = {
+  adventure: 'Остров Тихой бухты — КОД:АРЕНА',
   home: 'КОД:АРЕНА — программирование через игру',
   courses: 'Курсы — КОД:АРЕНА',
   map: 'Карта знаний — КОД:АРЕНА',
@@ -73,7 +75,8 @@ function AppContent() {
   return (
     <AppShell view={view} onNavigate={navigate} onOpenPalette={() => setPaletteOpen(true)}>
       {view === 'home' && <StudioHome onNavigate={navigate} onPython={(chapter) => { setPythonStart(chapter ?? null); navigate('python') }} />}
-      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} />}
+      {view === 'adventure' && <AdventureView onCourse={() => { setPythonStart(null); navigate('python') }} />}
+      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onAdventure={()=>navigate('adventure')} />}
       {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} />}
       {view === 'map' && <MapView onStartMission={startMission} />}
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}

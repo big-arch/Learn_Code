@@ -13,7 +13,7 @@ export function LofiPlayer() {
     setBusy(true);setError('')
     try{engine.current??=new LofiEngine();engine.current.setVolume(volume/100);engine.current.setMood(mood);await engine.current.play();setPlaying(true)}catch{setError('Звук недоступен. Попробуй другой браузер.')}finally{setBusy(false)}
   }
-  return <details className="music-dock"><summary><Headphones size={17}/><span>{playing?(mood==='lofi'?'Играет lofi':'Играет ambient'):'Музыка для фокуса'}</span><i className={playing?'playing':''}/></summary><aside className={'lofi-player '+(playing?'is-playing':'')} aria-label="Фоновая музыка">
+  return <details className="music-dock"><summary aria-label="Фоновая музыка"><Headphones size={17}/><span>{playing?(mood==='lofi'?'Играет lofi':'Играет ambient'):'Музыка для фокуса'}</span><i className={playing?'playing':''}/></summary><aside className={'lofi-player '+(playing?'is-playing':'')} aria-label="Фоновая музыка">
     <div className="lofi-art"><Headphones size={22}/><i/><i/><i/></div>
     <div className="lofi-meta"><strong>{mood==='lofi'?'Тёплая орбита':'Тихий космос'}</strong><span>{playing?'Сейчас играет': 'Музыка для фокуса'} · {mood==='lofi'?'74 BPM':'ambient'}</span></div>
     <button type="button" className="music-toggle" onClick={()=>void toggle()} disabled={busy} aria-label={playing?'Остановить музыку':'Включить lofi'} aria-pressed={playing}>{playing?<Pause size={18}/>:<Play size={18}/>}</button>

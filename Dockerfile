@@ -12,6 +12,7 @@ ENV NODE_ENV=production HOST=0.0.0.0 PORT=4174 DB_PATH=/app/data/learning.sqlite
 COPY --from=build /app/dist ./dist
 COPY server ./server
 COPY src/data/python-course.json ./src/data/python-course.json
+COPY src/data/adventure-quests.json ./src/data/adventure-quests.json
 RUN mkdir /app/data && chown -R node:node /app
 USER node
 EXPOSE 4174

@@ -32,7 +32,7 @@ export default async function studioChecks(page) {
   check(await xp() === 90, 'replay awards no duplicate lesson XP')
   await page.locator('.side-nav').getByRole('button', { name: 'Прогресс', exact: true }).click()
   await page.getByText('Сохранено в SQL.', { exact: false }).waitFor()
-  check((await page.locator('.progress-metrics').innerText()).includes('1/36'), 'quiz excluded from lesson count')
+  check((await page.locator('.progress-metrics').innerText()).includes('1/40'), 'quiz excluded from lesson count')
   const key = await page.evaluate(() => localStorage.getItem('code-arena-profile-key'))
   const restoredContext = await page.context().browser().newContext()
   try {

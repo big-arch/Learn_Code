@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, Code2, Gamepad2, Home, Search, Sparkles, Volume2, VolumeX, Zap } from 'lucide-react'
+import { BarChart3, BookOpen, Code2, Compass, Gamepad2, Home, Search, Sparkles, Volume2, VolumeX, Zap } from 'lucide-react'
 import { LofiPlayer } from './LofiPlayer'
 import type { ReactNode } from 'react'
 import { useProgress } from '../state/useProgress'
@@ -8,6 +8,7 @@ const navigation: { id: ViewId; label: string; icon: typeof Home }[] = [
   { id: 'home', label: 'Главная', icon: Home },
   { id: 'courses', label: 'Курсы', icon: BookOpen },
   { id: 'python', label: 'Курс Python', icon: Code2 },
+  { id: 'adventure', label: 'Приключение', icon: Compass },
   { id: 'arena', label: 'Арена', icon: Gamepad2 },
   { id: 'progress', label: 'Прогресс', icon: BarChart3 },
   { id: 'research', label: 'Справочник', icon: BookOpen },
@@ -26,7 +27,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
   const levelXp = progress.xp % 500
 
   return (
-    <div className="app-shell">
+    <div className={'app-shell'+(view==='adventure'?' adventure-mode':'')}>
       <a className="skip-link" href="#main-content">Перейти к содержанию</a>
       <aside className="sidebar">
         <button className="brand" type="button" onClick={() => onNavigate('home')} aria-label="КОД:АРЕНА — на главную">
@@ -93,7 +94,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
           const Icon = item.icon
           return (
             <button key={item.id} type="button" className={view === item.id ? 'active' : ''} onClick={() => onNavigate(item.id)} aria-current={view === item.id ? 'page' : undefined}>
-              <Icon size={20} aria-hidden="true" /><span>{item.id === 'python' ? 'Python' : item.id === 'research' ? 'Словарь' : item.label}</span>
+              <Icon size={20} aria-hidden="true" /><span>{item.id === 'adventure' ? 'Остров' : item.id === 'python' ? 'Python' : item.id === 'research' ? 'Словарь' : item.label}</span>
             </button>
           )
         })}

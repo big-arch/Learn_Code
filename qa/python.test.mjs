@@ -30,6 +30,12 @@ test('Python course: actual interpreter, all lessons and failures', async t => {
       assert.equal(r.output.trim(), lesson.exampleOutput.trim())
     })
   }
+  const island = JSON.parse(await readFile(new URL('../src/data/adventure-quests.json', import.meta.url), 'utf8'))
+  for (const q of island) {
+    await t.test(q.id + ' solution passes', () => { const r=run(q.solution,q.checks,q.stdin); assert.equal(r.error,''); assert.ok(r.tests.every(c=>c.passed),JSON.stringify(r)) })
+    await t.test(q.id + ' starter rejected', () => { const r=run(q.starter,q.checks,q.stdin); assert.ok(r.error||r.tests.some(c=>!c.passed)) })
+  }
+  await t.test('island beacon rejects hardcoded energy', () => {const q=island[3],r=run('crystals = int(input())\npower = 12\nprint(power)',q.checks,q.stdin);assert.ok(r.tests.some(c=>!c.passed))})
   await t.test('syntax error identifies student line', () => assert.match(run('print(').error, /SyntaxError, строка 1/))
   await t.test('missing input gets explanatory EOFError', () => assert.match(run('input()').error, /EOFError/))
   await t.test('stdout bounded', () => assert.match(run('print("x" * 13000)').error, /12 000/))

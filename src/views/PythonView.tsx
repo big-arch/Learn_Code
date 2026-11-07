@@ -8,7 +8,7 @@ import { useProgress } from '../state/useProgress'
 import { Observatory } from '../components/Observatory'
 import { CodeEditor } from '../components/CodeEditor'
 
-export function PythonView({ startChapter = null }: { startChapter?: number | null }) {
+export function PythonView({ startChapter = null, onAdventure }: { startChapter?: number | null; onAdventure?: () => void }) {
   const { progress }=useProgress()
   const [index,setIndex]=useState(()=>startChapter!==null?startChapter*4:Math.max(0,pythonLessons.findIndex(l=>!progress.completed.includes(l.id))))
   const completed=pythonLessons.filter(l=>progress.completed.includes(l.id)).length
@@ -17,6 +17,7 @@ export function PythonView({ startChapter = null }: { startChapter?: number | nu
   return <div className="python-course">
     <div className="course-topline"><span className="section-kicker">ПУТЬ ИССЛЕДОВАТЕЛЯ / PYTHON</span><span>{completed} / 24 урока</span></div>
     <div className="python-heading"><div><h1>От первой строки<br/>к своей программе.</h1><p>24 урока · 6 глав · теория, практика и собственный проект</p></div><div className="course-progress-ring" style={{'--completion':completed/24*100+'%'} as React.CSSProperties}><span>{Math.round(completed/24*100)}<small>%</small></span></div></div>
+    {onAdventure&&<button type="button" className="course-adventure-link" onClick={onAdventure}>Закрепить первые 4 темы в игре «Остров Тихой бухты» <ArrowRight size={17}/></button>}
     <div className="python-layout">
       <details className="syllabus" open><summary><BookOpen size={18}/> Программа курса</summary>
         {pythonChapters.map((chapter,c)=><section key={chapter.title}><h2><span>0{c+1}</span>{chapter.title}</h2>{pythonLessons.map((l,i)=>l.chapter===c&&<button type="button" key={l.id} className={i===index?'active':''} aria-current={i===index?'step':undefined} onClick={()=>select(i)}><span>{progress.completed.includes(l.id)?<Check size={14}/>:String(i+1).padStart(2,'0')}</span><span>{l.title.split(': ').at(-1)}</span></button>)}</section>)}
