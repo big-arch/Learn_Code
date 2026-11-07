@@ -81,8 +81,7 @@ export function ProgramStage({result,source,demo,busy,onDemo,onStep}:{result:Pyt
   const [index,setIndex]=useState(0),[speed,setSpeed]=useState(1)
   const [playing,setPlaying]=useState(()=>Boolean(frames.length&&progress.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches))
   const step=frames[index],atEnd=index>=frames.length-1
-  useLayoutEffect(()=>{onStep(!demo?step?.line:undefined)},[step,demo,onStep])
-  useEffect(()=>()=>onStep(undefined),[onStep])
+  useLayoutEffect(()=>{onStep(!demo?step?.line:undefined);return()=>onStep(undefined)},[step,demo,onStep])
   useEffect(()=>{
     if(!playing||!frames.length)return
     const timer=setTimeout(()=>{if(atEnd)setPlaying(false);else setIndex(i=>i+1)},1200/speed)

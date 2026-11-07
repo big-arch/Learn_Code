@@ -26,6 +26,8 @@ export default async function bookStudioChecks(page) {
   await page.getByRole('textbox',{name:'Ввод для Python'}).fill('7')
   await page.getByRole('button',{name:'Запустить код',exact:true}).click()
   await page.locator('.stage-step').waitFor()
+  await page.waitForFunction(()=>document.querySelector('.line-numbers .active-line')?.textContent==='01')
+  check(await page.locator('.line-numbers .active-line').innerText()==='01','first line remains highlighted after preview replacement')
   check(await page.locator('.stage-mode').innerText()==='Твоя программа','student execution has its own playback')
   check((await page.locator('.stage-memory').innerText()).includes("'7'"),'input starts as a string')
   await page.getByRole('button',{name:'Следующий шаг',exact:true}).click()
