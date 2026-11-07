@@ -27,7 +27,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
   const levelXp = progress.xp % 500
 
   return (
-    <div className={'app-shell'+(view==='adventure'?' adventure-mode':'')}>
+    <div data-motion={progress.motion?'on':'off'} className={'app-shell'+(view==='adventure'?' adventure-mode':'')}>
       <a className="skip-link" href="#main-content">Перейти к содержанию</a>
       <aside className="sidebar">
         <button className="brand" type="button" onClick={() => onNavigate('home')} aria-label="КОД:АРЕНА — на главную">

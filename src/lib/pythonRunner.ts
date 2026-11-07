@@ -1,7 +1,10 @@
 import type { PythonCheck } from '../data/pythonCourse'
+export interface PythonVariable { name: string; type: string; value: string }
+export interface PythonStep { line: number; event: 'step' | 'exception'; scope: string; variables: PythonVariable[]; output: string }
 export interface PythonResult {
+  trace: PythonStep[]; traceTruncated: boolean
   output: string; error: string; tests: { label: string; passed: boolean }[]
-  variables: { name: string; type: string; value: string }[]
+  variables: PythonVariable[]
 }
 export class PythonRunner {
   private worker: Worker | null = null

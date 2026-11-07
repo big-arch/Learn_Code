@@ -42,6 +42,33 @@ test('Python course: actual interpreter, all lessons and failures', async t => {
     await t.test('Mira rejects unrelated output: '+output,()=>{const r=run('print('+JSON.stringify(output)+')',island[0].checks);assert.ok(r.tests.some(c=>!c.passed))})
   }
   await t.test('island beacon rejects hardcoded energy', () => {const q=island[3],r=run('crystals = int(input())\npower = 12\nprint(power)',q.checks,q.stdin);assert.ok(r.tests.some(c=>!c.passed))})
+  await t.test('trace records input conversion and addition after each line',()=>{
+    const r=run('value = input()\nnumber = int(value)\nanswer = number + 10\nprint(answer)',[],'7')
+    assert.deepEqual(r.trace.map(s=>s.line),[1,2,3,4])
+    assert.deepEqual(r.trace[0].variables,[{name:'value',type:'str',value:"'7'"}])
+    assert.equal(r.trace[1].variables.find(v=>v.name==='number').type,'int')
+    assert.equal(r.trace[2].variables.find(v=>v.name==='answer').value,'17')
+    assert.equal(r.trace[3].output,'17\n')
+  })
+  await t.test('trace shows real loop iterations',()=>{
+    const r=run('total = 0\nfor n in range(3):\n    total += n\nprint(total)')
+    assert.deepEqual(r.trace.filter(s=>s.line===3).map(s=>s.variables.find(v=>v.name==='total').value),['0','1','3'])
+  })
+  await t.test('trace captures local function arguments and error recovery',()=>{
+    const r=run('def double(n):\n    return n * 2\nanswer = double(5)')
+    assert.equal(r.trace.find(s=>s.scope==='double').variables.find(v=>v.name==='n').value,'5')
+    const failed=run('value = 1\nprint(1 / 0)');assert.equal(failed.trace.at(-1).event,'exception')
+    assert.equal(run('print(4)').output,'4\n')
+  })
+  await t.test('trace does not call custom repr even inside a container',()=>{
+    const r=run('class Item:\n    def __repr__(self):\n        print("unexpected side effect")\n        return "item"\nitems = [Item()]\nprint("ok")')
+    assert.equal(r.output,'ok\n');assert.equal(r.error,'')
+    assert.equal(r.variables.find(v=>v.name==='items').value,'[<Item>]')
+  })
+  await t.test('trace is bounded without truncating execution',()=>{
+    const r=run('total = 0\nfor n in range(1000):\n    total += 1\nprint(total)')
+    assert.equal(r.trace.length,120);assert.equal(r.traceTruncated,true);assert.equal(r.output,'1000\n')
+  })
   await t.test('syntax error identifies student line', () => assert.match(run('print(').error, /SyntaxError, строка 1/))
   await t.test('missing input gets explanatory EOFError', () => assert.match(run('input()').error, /EOFError/))
   await t.test('stdout bounded', () => assert.match(run('print("x" * 13000)').error, /12 000/))

@@ -21,3 +21,7 @@ Manrope для основного текста и заголовков; JetBrain
 ## Adventure island
 
 Daylight, sage grass, turquoise water, cream plaster, terracotta roofs and timber. Orthographic camera follows the player. Quest overlays use parchment colours; the surrounding learning studio retains its dark theme. Controls must stay visible on desktop and mobile.
+
+## Readability and live code upgrade
+
+Теория 18px desktop / 17px mobile, код 16px / 15px, навигация 14–15px. В практическом уроке вместо декоративной обсерватории показана мастерская данных: ввод, память и вывод. Крупная сцена связана с записанными шагами настоящего Python; значения читаются в HTML под сценой. Микроанимации 180–220ms, отключаются настройкой движения и prefers-reduced-motion. Музыкальный плеер: шесть собственных процедурных композиций, выбор, предыдущая/следующая, случайная мелодия, автосмена; на desktop открывается справа.
