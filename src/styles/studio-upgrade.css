@@ -25,3 +25,25 @@
 @media(max-width:560px){.island-objective small{font-size:11px}.island-objective button{font-size:12px}.island-minimap>span{font-size:0}.island-interaction p{font-size:11px}.island-dialog header span,.island-dialog header small{font-size:12px}.quest-task,.npc-dialogue{font-size:15px}}
 .quest-practice .line-numbers{font-size:16px;line-height:1.8}.app-shell[data-motion=off] button:active:not(:disabled),.app-shell[data-motion=off] .syllabus button:hover{transform:none}
 .python-lab-grid,.program-stage,.practice-task{scroll-margin-top:88px}
+
+/* Book excerpts stay in the lesson and open without an external language barrier. */
+.book-source.book-reading{display:block;margin:24px 0;border:1px solid #a4b5a2;border-radius:14px;background:#e2e8d9;color:#283f36;overflow:hidden}
+.book-reading>summary{display:flex;align-items:flex-start;gap:12px;padding:18px 20px;cursor:pointer;list-style:none;min-height:68px}
+.book-reading>summary::-webkit-details-marker{display:none}
+.book-reading>summary:hover{background:#d3dfcc}
+.book-reading>summary:focus-visible{outline:3px solid #255f51;outline-offset:-4px;border-radius:12px}
+.book-reading>summary>span{flex:1;min-width:0}
+.book-reading>summary strong{display:block;font-size:18px;line-height:1.5}
+.book-reading>summary>span>span{display:block;margin-top:4px;font-size:15px;line-height:1.65;overflow-wrap:anywhere}
+.book-reading .book-reading-chevron{margin-top:5px;transition:transform .18s ease-out}
+.book-reading[open] .book-reading-chevron{transform:rotate(180deg)}
+.book-reading-content{border-top:1px solid #a4b5a2;padding:24px;background:#f4f0e5;overflow-wrap:anywhere}
+.book-reading-content>h3{margin:8px 0 18px;font-size:24px;line-height:1.35;color:#263d33}
+.book-reading-content>p{font-size:18px;line-height:1.85;margin:0 0 18px;max-width:78ch;color:#303f37}
+.book-reading-content>.book-reading-kind{font-size:14px;font-weight:600;color:#4b6657}
+.book-reading-content>pre{max-width:100%;overflow:auto;padding:18px;background:#202c3a;color:#ffe3ae;border-radius:10px;font-size:16px;line-height:1.75;white-space:pre;overflow-wrap:normal}
+.book-reading-content>footer{border-top:1px solid #bdc7b7;margin-top:24px;padding-top:16px}
+.book-reading-content>footer p{font-size:14px;line-height:1.7;color:#526052;margin:0 0 12px;max-width:85ch}
+.book-reading-original{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-size:16px;font-weight:600}
+.book-reading-original svg{margin:0}
+@media(max-width:560px){.book-reading>summary{padding:16px 12px;gap:9px}.book-reading>summary>span>span{font-size:14px}.book-reading-content{padding:20px 16px}.book-reading-content>p{font-size:17px}.book-reading-content>h3{font-size:22px}.book-reading-content>pre{font-size:14px;padding:12px}}

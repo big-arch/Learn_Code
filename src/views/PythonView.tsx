@@ -7,6 +7,7 @@ import type { PythonResult } from '../lib/pythonRunner'
 import { useProgress } from '../state/useProgress'
 import { ProgramStage } from '../components/ProgramStage'
 import { CodeEditor } from '../components/CodeEditor'
+import { BookReading } from '../components/BookReading'
 
 export function PythonView({ startChapter = null, onAdventure }: { startChapter?: number | null; onAdventure?: () => void }) {
   const { progress }=useProgress()
@@ -59,7 +60,7 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
       <div className="example-card"><div><span>Разобранный пример</span><span>Python</span></div><pre><code>{lesson.example}</code></pre><div className="example-output"><span>Что получится</span><pre>{lesson.exampleOutput}</pre></div></div>
       <div className="book-walkthrough"><h3>Разберём пример по шагам</h3><ol>{lesson.reading.walkthrough.map(step=><li key={step}>{step}</li>)}</ol><button className="button secondary" type="button" onClick={()=>{setTab('code');void run(true)}}>Посмотреть выполнение примера <ArrowRight size={17}/></button></div>
       <div className="book-experiment"><h3>Маленький эксперимент</h3><p>{lesson.reading.experiment}</p><details><summary>Проверить своё объяснение</summary><p>{lesson.reading.answer}</p></details></div>
-      <p className="book-source"><BookOpen size={17}/><span>Почитать глубже: <a href={lesson.reading.url} target="_blank" rel="noreferrer">{lesson.reading.source}</a></span></p>
+      <BookReading reading={lesson.reading}/>
       <div className="concept-callout"><BookOpen size={20}/><p><strong>Попробуй объяснить своими словами.</strong> Что получает программа на вход, что делает и что получится? Затем переходи к вопросу.</p></div>
       <button className="button primary" type="button" onClick={()=>setTab('quiz')}>Проверить понимание <ArrowRight size={17}/></button>
     </section>}
