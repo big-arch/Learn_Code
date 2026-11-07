@@ -16,7 +16,8 @@ const views: { id: ViewId; label: string }[] = [
   { id: 'map', label: 'Карта знаний' },
   { id: 'arena', label: 'Игровая арена' },
   { id: 'progress', label: 'Мой прогресс' },
-  { id: 'research', label: 'Исследование платформ' },
+  { id: 'research', label: 'Справочник Python' },
+  { id: 'python', label: 'Полный начальный курс Python' },
 ]
 
 export function CommandPalette({ open, onClose, onNavigate, onStartMission }: CommandPaletteProps) {

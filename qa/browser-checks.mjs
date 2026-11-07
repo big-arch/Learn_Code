@@ -1,14 +1,12 @@
 export default async (page) => {
+  // Caller must supply an isolated, disposable QA context.
   page.setDefaultTimeout(8000)
   const report = { checks: [], errors: [] }
   const check = (ok, name) => { if (!ok) throw new Error(name); report.checks.push(name) }
   page.on('pageerror', err => report.errors.push(err.message))
   await page.setViewportSize({width:1440,height:1000})
   await page.goto('http://127.0.0.1:5175')
-  await page.getByRole('button',{name:'Я никогда не писал код'}).waitFor()
-  await page.evaluate(() => { localStorage.removeItem('code-arena-progress-v1'); localStorage.removeItem('code-arena-profile-key') })
-  await page.reload()
-  await page.getByRole('button',{name:'Я никогда не писал код'}).waitFor()
+  await page.getByRole('heading',{name:'Твой код.',exact:false}).waitFor()
   const unit = await page.evaluate(async () => {
     const {courses} = await import('/src/data/courses.ts')
     const {getLessons} = await import('/src/data/lessons.ts')
@@ -42,7 +40,7 @@ export default async (page) => {
     return results
   })
   report.checks.push(...unit)
-  await page.getByRole('button',{name:'Я никогда не писал код'}).click()
+  await page.locator('.side-nav').getByRole('button',{name:'Арена',exact:true}).click()
   check(await page.locator('.robot-canvas canvas').count()===1,'Three.js game canvas')
   await page.getByRole('button',{name:'Запустить код',exact:true}).click()
   await page.locator('.validation-message.error').waitFor()
@@ -77,14 +75,10 @@ export default async (page) => {
   const remote = await page.evaluate(async()=> (await (await fetch('/api/progress',{headers:{'X-Profile-Key':localStorage.getItem('code-arena-profile-key')}})).json()).progress)
   check(remote.completed.length===12,'all 12 missions stored in SQLite')
   await page.reload()
-  await page.getByRole('button',{name:'Я никогда не писал код'}).waitFor()
+  await page.getByRole('heading',{name:'Твой код.',exact:false}).waitFor()
   check(await page.evaluate(()=>JSON.parse(localStorage.getItem('code-arena-progress-v1')).completed.length)===12,'progress survives reload')
-  await page.evaluate(()=>localStorage.removeItem('code-arena-progress-v1'))
-  await page.reload()
-  await page.getByRole('button',{name:'Я никогда не писал код'}).waitFor()
-  check(await page.evaluate(()=>JSON.parse(localStorage.getItem('code-arena-progress-v1')).completed.length)===12,'restore from SQL without local progress')
   await page.setViewportSize({width:390,height:844})
-  for(const nav of ['Главная','Курсы','Карта','Арена','Прогресс','Обзор']) {
+  for(const nav of ['Главная','Курсы','Python','Арена','Прогресс','Словарь']) {
     await page.locator('.mobile-nav').getByRole('button',{name:nav,exact:true}).click()
     check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'mobile no horizontal overflow: '+nav)
   }

@@ -1,4 +1,5 @@
-import { BarChart3, BookOpen, FlaskConical, Gamepad2, Home, Map, Search, Sparkles, Volume2, VolumeX, Zap } from 'lucide-react'
+import { BarChart3, BookOpen, Code2, Gamepad2, Home, Search, Sparkles, Volume2, VolumeX, Zap } from 'lucide-react'
+import { LofiPlayer } from './LofiPlayer'
 import type { ReactNode } from 'react'
 import { useProgress } from '../state/useProgress'
 import type { ViewId } from '../types'
@@ -6,10 +7,10 @@ import type { ViewId } from '../types'
 const navigation: { id: ViewId; label: string; icon: typeof Home }[] = [
   { id: 'home', label: 'Главная', icon: Home },
   { id: 'courses', label: 'Курсы', icon: BookOpen },
-  { id: 'map', label: 'Карта знаний', icon: Map },
+  { id: 'python', label: 'Курс Python', icon: Code2 },
   { id: 'arena', label: 'Арена', icon: Gamepad2 },
   { id: 'progress', label: 'Прогресс', icon: BarChart3 },
-  { id: 'research', label: 'Исследование', icon: FlaskConical },
+  { id: 'research', label: 'Справочник', icon: BookOpen },
 ]
 
 interface AppShellProps {
@@ -57,10 +58,10 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
         <div className="sidebar-quest">
           <Sparkles size={20} aria-hidden="true" />
           <strong>Знания без границ</strong>
-          <p>12 вводных миссий.<br />Учись в своём темпе.</p>
+          <p>24 урока Python.<br />От основ до проекта.</p>
           <span>OPEN LEARNING</span>
         </div>
-        <div className="sidebar-footer"><i /> Система в сети <span>v1.1</span></div>
+        <div className="sidebar-footer"><i /> Система в сети <span>v2.0</span></div>
       </aside>
 
       <div className="workspace">
@@ -77,7 +78,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
               <div className="mini-progress" aria-label={`${levelXp} из 500 XP до следующего уровня`}><i style={{ width: `${levelXp / 5}%` }} /></div>
               <b>{progress.xp} XP</b>
             </div>
-            <button className="icon-button" type="button" onClick={() => setSound(!progress.sound)} aria-label={progress.sound ? 'Выключить звук' : 'Включить звук'} aria-pressed={progress.sound}>
+            <button className="icon-button" type="button" onClick={() => setSound(!progress.sound)} aria-label={progress.sound ? 'Выключить звуки победы' : 'Включить звуки победы'} aria-pressed={progress.sound}>
               {progress.sound ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
             </button>
             <button className="avatar" type="button" onClick={() => onNavigate('progress')} aria-label="Открыть профиль и прогресс">YOU</button>
@@ -86,12 +87,13 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
         <main id="main-content" tabIndex={-1}>{children}</main>
       </div>
 
+      <LofiPlayer />
       <nav className="mobile-nav" aria-label="Мобильная навигация">
         {navigation.map((item) => {
           const Icon = item.icon
           return (
             <button key={item.id} type="button" className={view === item.id ? 'active' : ''} onClick={() => onNavigate(item.id)} aria-current={view === item.id ? 'page' : undefined}>
-              <Icon size={20} aria-hidden="true" /><span>{item.label === 'Исследование' ? 'Обзор' : item.label === 'Карта знаний' ? 'Карта' : item.label}</span>
+              <Icon size={20} aria-hidden="true" /><span>{item.id === 'python' ? 'Python' : item.id === 'research' ? 'Словарь' : item.label}</span>
             </button>
           )
         })}

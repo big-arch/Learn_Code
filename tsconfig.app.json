@@ -12,6 +12,7 @@
     ],
     "allowArbitraryExtensions": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "strict": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,

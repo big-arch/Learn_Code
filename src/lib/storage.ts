@@ -1,5 +1,7 @@
 import type { ProgressState } from '../types'
 import { allMissions } from '../data/lessons'
+import { pythonProgressItems } from '../data/pythonCourse'
+const progressItems = [...allMissions, ...pythonProgressItems]
 
 export const STORAGE_KEY = 'code-arena-progress-v1'
 
@@ -33,7 +35,7 @@ export function normalizeProgress(input: unknown): ProgressState {
   try {
     const value = input as Partial<ProgressState>
     if (value.version !== 1) return initialProgress
-    const completed = [...new Set(Array.isArray(value.completed) ? value.completed.filter(id => allMissions.some(m => m.id === id)) : [])]
+    const completed = [...new Set(Array.isArray(value.completed) ? value.completed.filter(id => progressItems.some(m => m.id === id)) : [])]
     const completedAt = isStringRecord(value.completedAt) ? value.completedAt : {}
     const today = new Date()
     const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (today.getDay() + 6) % 7)
@@ -48,7 +50,7 @@ export function normalizeProgress(input: unknown): ProgressState {
 
     return {
       version: 1,
-      xp: allMissions.filter(m => completed.includes(m.id)).reduce((sum, m) => sum + m.xp, 0),
+      xp: progressItems.filter(m => completed.includes(m.id)).reduce((sum, m) => sum + m.xp, 0),
       completed,
       completedAt,
       drafts: isStringRecord(value.drafts) ? value.drafts : {},

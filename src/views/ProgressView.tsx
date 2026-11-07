@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw, Settings2, ShieldCheck, Sparkles, Trophy, Volume2, VolumeX, X, Zap } from 'lucide-react'
 import { allMissions, getLessons, completedWorlds, nextCourseFor } from '../data/lessons'
+import { pythonLessons } from '../data/pythonCourse'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
 import type { LanguageId } from '../types'
@@ -12,13 +13,15 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
   const resetRef = useRef<HTMLDialogElement>(null)
   const level = Math.floor(progress.xp / 500) + 1
   const levelXp = progress.xp % 500
+  const pythonDone = pythonLessons.filter(l => progress.completed.includes(l.id)).length
+  const lessonsDone = progress.completed.filter(id => !id.endsWith('-quiz')).length
   const total = progress.activity.reduce((sum, value) => sum + value, 0)
   const maxActivity = Math.max(...progress.activity, 1)
 
   useEffect(() => () => { if (resetRef.current?.open) resetRef.current.close() }, [])
 
   const badges = [
-    { title: 'Первый контакт', description: 'Запустил рабочий код', icon: Zap, unlocked: progress.completed.length >= 1 },
+    { title: 'Первый контакт', description: 'Запустил рабочий код', icon: Zap, unlocked: lessonsDone >= 1 },
     { title: 'Исследователь', description: 'Прошёл миссии в 3 мирах', icon: Gamepad2, unlocked: completedWorlds(progress.completed) >= 3 },
     { title: 'Полиглот', description: 'Прошёл вводные миссии 6 направлений', icon: Code2, unlocked: completedWorlds(progress.completed) >= 6 },
     { title: 'В своём ритме', description: 'Семь учебных дней подряд', icon: Flame, unlocked: progress.streak >= 7 },
@@ -31,14 +34,14 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
       <section className="progress-hero panel">
         <div className="level-emblem"><span>УРОВЕНЬ</span><strong>{String(level).padStart(2, '0')}</strong><div className="level-orbit"><i /><i /></div></div>
         <div className="level-details"><span className="section-kicker">РАЗРАБОТЧИК · {level < 3 ? 'НАЧАЛО ПУТИ' : 'УВЕРЕННЫЙ СТАРТ'}</span><h2>{progress.xp} <span>XP</span></h2><p>{levelXp} из 500 XP до уровня {String(level + 1).padStart(2, '0')}</p><div className="level-progress"><i style={{ width: `${levelXp / 5}%` }} /></div></div>
-        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{progress.completed.length}<span>/{allMissions.length}</span></strong><small>миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
+        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
       </section>
 
       <div className="progress-layout">
         <section className="activity-panel panel">
-          <div className="panel-heading"><div><span className="section-kicker">АКТИВНОСТЬ · 7 ДНЕЙ</span><h2>Твой ритм</h2></div><span className="soft-chip">{total} запусков</span></div>
+          <div className="panel-heading"><div><span className="section-kicker">АКТИВНОСТЬ · 7 ДНЕЙ</span><h2>Твой ритм</h2></div><span className="soft-chip">{total} шагов</span></div>
           <div className="progress-bar-chart">{progress.activity.map((value, index) => <div key={weekDays[index]}><span>{value}</span><div><i style={{ height: `${Math.max(3, value / maxActivity * 100)}%` }} /></div><small>{weekDays[index]}</small></div>)}</div>
-          <p className="gentle-note"><Sparkles size={15} />График показывает завершённые миссии, а не время за экраном.</p>
+          <p className="gentle-note"><Sparkles size={15} />График показывает завершённые уроки, вопросы и миссии.</p>
         </section>
 
         <section className="settings-panel panel">
@@ -51,13 +54,13 @@ export function ProgressView({ onStartMission }: { onStartMission: (id: Language
       </div>
 
       <section className="skills-panel panel">
-        <div className="panel-heading"><div><span className="section-kicker">ПРОГРЕСС ВВОДНЫХ МИССИЙ</span><h2>Навыки по направлениям</h2></div><span className="soft-chip">По реальным действиям</span></div>
+        <div className="panel-heading"><div><span className="section-kicker">ПРОГРЕСС ОБУЧЕНИЯ</span><h2>Навыки по направлениям</h2></div><span className="soft-chip">По реальным действиям</span></div>
         <div className="mastery-grid">{courses.map((course) => {
-          const doneCount = getLessons(course).filter(m => progress.completed.includes(m.id)).length
-          const done = doneCount === getLessons(course).length
+          const doneCount = course.id === 'python' ? pythonDone : getLessons(course).filter(m => progress.completed.includes(m.id)).length
+          const done = doneCount === (course.id === 'python' ? 24 : getLessons(course).length)
           const hasDraft = Boolean(progress.drafts[course.mission.id] && progress.drafts[course.mission.id] !== course.mission.starterCode)
-          const percent = doneCount * 50
-          return <button type="button" key={course.id} onClick={() => onStartMission(course.id)} style={{ '--course-color': course.color } as React.CSSProperties}><div><strong>{course.name}</strong><span>{percent}%</span></div><p>{done ? course.mission.title : hasDraft ? 'Черновик сохранён' : 'Первая миссия ждёт'}</p><div className="mastery-track"><i style={{ width: `${percent}%` }} /></div><small>{done ? <><Check size={12} />Вводные миссии пройдены</> : course.skills.join(' · ')}</small></button>
+          const percent = Math.round(doneCount / (course.id === 'python' ? 24 : 2) * 100)
+          return <button type="button" key={course.id} onClick={() => onStartMission(course.id)} style={{ '--course-color': course.color } as React.CSSProperties}><div><strong>{course.name}</strong><span>{percent}%</span></div><p>{course.id === 'python' ? `${pythonDone} из 24 уроков` : done ? course.mission.title : hasDraft ? 'Черновик сохранён' : 'Первая миссия ждёт'}</p><div className="mastery-track"><i style={{ width: `${percent}%` }} /></div><small>{done ? <><Check size={12} />Маршрут пройден</> : course.skills.join(' · ')}</small></button>
         })}</div>
       </section>
 

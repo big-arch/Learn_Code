@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   cacheDir: '.cache/vite',
-  server: { proxy: { '/api': 'http://127.0.0.1:4174' } },
+  server: { proxy: { '/api': process.env.API_TARGET || 'http://127.0.0.1:4174' } },
   build: { rolldownOptions: { output: { codeSplitting: { groups: [{ name: 'three', test: /node_modules[\\/].*three/ }] } } } },
   resolve: {
     alias: {

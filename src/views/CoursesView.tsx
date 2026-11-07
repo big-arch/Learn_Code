@@ -26,7 +26,7 @@ export function CoursesView({ onOpenCourse, onStartMission }: CoursesViewProps) 
 
   return (
     <div className="courses-view view-enter">
-      <div className="view-heading"><div><span className="section-kicker">КАТАЛОГ // 6 НАПРАВЛЕНИЙ</span><h1>Твоя траектория<span>.</span></h1><p>Никакой случайной ленты. В каждом направлении доступны две вводные миссии; полный курс — в плане развития.</p></div><div className="catalog-price"><span>ВСЕ КУРСЫ</span><strong>0 ₽</strong><small>без пробного периода</small></div></div>
+      <div className="view-heading"><div><span className="section-kicker">КАТАЛОГ // 6 НАПРАВЛЕНИЙ</span><h1>Твоя траектория<span>.</span></h1><p>Начни с Python: 24 урока от первой строки до проекта. Ещё пять направлений можно попробовать в коротких игровых миссиях.</p></div><div className="catalog-price"><span>ВСЕ КУРСЫ</span><strong>0 ₽</strong><small>без пробного периода</small></div></div>
 
       <div className="catalog-controls">
         <label className="catalog-search"><Search size={18} aria-hidden="true" /><span className="visually-hidden">Поиск курсов</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Язык, навык или проект" />{query && <button type="button" onClick={() => setQuery('')} aria-label="Очистить поиск"><X size={16} /></button>}</label>
@@ -37,7 +37,7 @@ export function CoursesView({ onOpenCourse, onStartMission }: CoursesViewProps) 
       <div className="catalog-summary"><span>Найдено: <strong>{filtered.length}</strong></span><i />Сортировка: от первой строки к проекту</div>
 
       {filtered.length > 0 ? <div className="catalog-grid">{filtered.map((course, index) => {
-        const done = progress.completed.includes(course.mission.id)
+        const done = progress.completed.includes(course.id === 'python' ? 'python-v2-24' : course.mission.id)
         return (
           <article className="catalog-card" key={course.id} style={{ '--course-color': course.color } as React.CSSProperties}>
             <div className="catalog-card-visual">
@@ -50,7 +50,7 @@ export function CoursesView({ onOpenCourse, onStartMission }: CoursesViewProps) 
               <div className="catalog-title"><div><h2>{course.name}</h2><p>{course.tagline}</p></div>{done && <span className="completed-chip"><Check size={13} />СТАРТ ПРОЙДЕН</span>}</div>
               <p className="catalog-description">{course.description}</p>
               <div className="skill-pills">{course.skills.map((skill) => <span key={skill}>{skill}</span>)}</div>
-              <div className="catalog-facts"><span><BookOpen size={15} />2 миссии доступны</span><span><Clock3 size={15} />'10–15 минут'</span></div>
+              <div className="catalog-facts"><span><BookOpen size={15} />{course.id === 'python' ? '24 урока доступны' : '2 миссии доступны'}</span><span><Clock3 size={15} />{course.id === 'python' ? '4–6 часов' : '10–15 минут'}</span></div>
               <div className="project-line"><span>ПРОЕКТ</span><strong>{course.project}</strong></div>
               <div className="catalog-card-actions"><button className="button secondary" type="button" onClick={() => onOpenCourse(course)}>Программа</button><button className="button primary" type="button" onClick={() => onStartMission(course.id)}><Play size={16} fill="currentColor" />{done ? 'Играть снова' : 'Начать'}<ArrowRight size={16} /></button></div>
             </div>

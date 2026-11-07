@@ -6,10 +6,11 @@ import { CommandPalette } from './components/CommandPalette'
 import { CourseDialog } from './components/CourseDialog'
 import { ProgressProvider } from './state/ProgressContext'
 import { CoursesView } from './views/CoursesView'
-import { HomeView } from './views/HomeView'
+import { StudioHome } from './views/StudioHome'
+import { PythonView } from './views/PythonView'
+import { HandbookView } from './views/HandbookView'
 import { MapView } from './views/MapView'
 import { ProgressView } from './views/ProgressView'
-import { ResearchView } from './views/ResearchView'
 import type { Course, LanguageId, ViewId } from './types'
 
 const titles: Record<ViewId, string> = {
@@ -18,7 +19,8 @@ const titles: Record<ViewId, string> = {
   map: 'Карта знаний — КОД:АРЕНА',
   arena: 'Игровая арена — КОД:АРЕНА',
   progress: 'Мой прогресс — КОД:АРЕНА',
-  research: 'Исследование — КОД:АРЕНА',
+  research: 'Справочник — КОД:АРЕНА',
+  python: 'Курс Python — КОД:АРЕНА',
 }
 
 function AppContent() {
@@ -26,6 +28,7 @@ function AppContent() {
   const [activeCourseId, setActiveCourseId] = useState<LanguageId>('python')
   const [detailCourse, setDetailCourse] = useState<Course | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [pythonStart, setPythonStart] = useState<number | null>(null)
   const [toast, setToast] = useState('')
   const toastTimer = useRef<number | null>(null)
 
@@ -62,18 +65,20 @@ function AppContent() {
   const startMission = useCallback((id: LanguageId) => {
     setActiveCourseId(id)
     setDetailCourse(null)
-    setView('arena')
+    setPythonStart(null)
+    setView(id === 'python' ? 'python' : 'arena')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
 
   return (
     <AppShell view={view} onNavigate={navigate} onOpenPalette={() => setPaletteOpen(true)}>
-      {view === 'home' && <HomeView onNavigate={navigate} onStartMission={startMission} onOpenCourse={setDetailCourse} onNotify={notify} />}
+      {view === 'home' && <StudioHome onNavigate={navigate} onPython={(chapter) => { setPythonStart(chapter ?? null); navigate('python') }} />}
+      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} />}
       {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} />}
       {view === 'map' && <MapView onStartMission={startMission} />}
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}
       {view === 'progress' && <ProgressView onStartMission={startMission} />}
-      {view === 'research' && <ResearchView />}
+      {view === 'research' && <HandbookView onPython={() => { setPythonStart(null); navigate('python') }} />}
       <CourseDialog course={detailCourse} onClose={() => setDetailCourse(null)} onStart={() => detailCourse && startMission(detailCourse.id)} />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={navigate} onStartMission={startMission} />
       <div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite" aria-atomic="true">

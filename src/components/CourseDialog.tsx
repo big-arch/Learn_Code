@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { ArrowRight, Clock3, FolderGit2, Play, X } from 'lucide-react'
+import { pythonChapters } from '../data/pythonCourse'
 import type { Course } from '../types'
 
 interface CourseDialogProps {
@@ -27,27 +28,27 @@ export function CourseDialog({ course, onClose, onStart }: CourseDialogProps) {
               <span>{course.name.toUpperCase()} // LEARNING PATH</span>
               <form method="dialog"><button className="icon-button" aria-label="Закрыть программу курса"><X size={19} /></button></form>
             </div>
-            <span className="course-dialog-index">0{course.modules.length} МОДУЛЯ · 0₽</span>
+            <span className="course-dialog-index">{course.id === 'python' ? 6 : course.modules.length} ГЛАВЫ · 0₽</span>
             <h2 id="course-dialog-title">{course.tagline}</h2>
             <p>{course.description}</p>
             <div className="course-meta"><span><Clock3 size={15} />{course.duration}</span><span><FolderGit2 size={15} />{course.project}</span></div>
           </div>
           <div className="course-dialog-body">
-            <h3>План развития курса</h3>
+            <h3>{course.id === 'python' ? 'Программа: все 24 урока доступны' : 'План развития курса'}</h3>
             <ol className="module-list">
-              {course.modules.map((module, index) => (
+              {(course.id === 'python' ? pythonChapters.map(c => ({ title: c.title, description: c.subtitle, lessons: 4 })) : course.modules).map((module, index) => (
                 <li key={module.title}>
                   <span>{String(index + 1).padStart(2, '0')}</span>
                   <div><h4>{module.title}</h4><p>{module.description}</p><small>{module.lessons} учебных шагов</small></div>
-                  {index === 0 ? <Play size={18} aria-label="Доступно сейчас" /> : <span className="soft-chip">В планах</span>}
+                  {course.id === 'python' || index === 0 ? <Play size={18} aria-label="Доступно сейчас" /> : <span className="soft-chip">В планах</span>}
                 </li>
               ))}
             </ol>
             <div className="dialog-mission-card">
-              <div><span>ПЕРВАЯ ИГРОВАЯ МИССИЯ</span><h3>{course.mission.title}</h3><p>{course.mission.objective}</p></div>
+              <div><span>ПЕРВАЯ ИГРОВАЯ МИССИЯ</span><h3>{course.id === 'python' ? 'Первый сигнал: print' : course.mission.title}</h3><p>{course.id === 'python' ? 'Разберись с первой командой, ответь на вопрос и передай сообщение станции.' : course.mission.objective}</p></div>
               <button className="button primary" type="button" onClick={onStart}>Начать миссию<ArrowRight size={17} /></button>
             </div>
-            <p className="prototype-note">Сейчас доступны 2 вводные миссии. Модули выше — план развития, а не готовый полный курс.</p>
+            <p className="prototype-note">{course.id === 'python' ? 'В каждой главе: понятная теория, вопросы, настоящий Python и проверка решений. Python выполняется в браузере.' : 'Сейчас доступны 2 вводные миссии. Модули выше — план развития, а не готовый полный курс.'}</p>
           </div>
         </>
       )}

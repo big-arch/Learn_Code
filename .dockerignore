@@ -2,7 +2,8 @@ node_modules
 dist
 .git
 .cache
-data
+/data/
+public/python/
 qa
 .tools
 .superpowers
