@@ -32,6 +32,7 @@ jobs:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
       - run: npm run test:cloud
+      - run: npm run test:editor
       - run: npm run test:games
       - run: npm run test:python
       - run: npm run test:world

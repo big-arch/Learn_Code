@@ -1,6 +1,8 @@
 import { useRef } from 'react'
-import type { KeyboardEvent } from 'react'
 import { Play, RotateCcw } from 'lucide-react'
+import { AssistedCodeInput } from './AssistedCodeInput'
+import { languageFromFile } from '../lib/codeAssist'
+import type { AssistMode } from '../lib/codeAssist'
 
 interface CodeEditorProps {
   value: string
@@ -9,29 +11,12 @@ interface CodeEditorProps {
   onRun: () => void
   onReset: () => void
   activeLine?: number
+  assistMode?: AssistMode
 }
 
-export function CodeEditor({ value, fileName, onChange, onRun, onReset, activeLine }: CodeEditorProps) {
+export function CodeEditor({ value, fileName, onChange, onRun, onReset, activeLine, assistMode='general' }: CodeEditorProps) {
   const linesRef = useRef<HTMLDivElement>(null)
   const lines = value.split('\n')
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Tab') {
-      event.preventDefault()
-      const input = event.currentTarget
-      const start = input.selectionStart
-      const end = input.selectionEnd
-      const next = `${value.slice(0, start)}    ${value.slice(end)}`
-      onChange(next)
-      requestAnimationFrame(() => {
-        input.selectionStart = input.selectionEnd = start + 4
-      })
-    }
-    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
-      event.preventDefault()
-      onRun()
-    }
-  }
 
   return (
     <div className="code-editor">
@@ -45,20 +30,16 @@ export function CodeEditor({ value, fileName, onChange, onRun, onReset, activeLi
         <div className="line-numbers" ref={linesRef} aria-hidden="true">
           {lines.map((_, index) => <span className={activeLine === index + 1 ? 'active-line' : ''} key={index}>{String(index + 1).padStart(2, '0')}</span>)}
         </div>
-        <textarea
-          id="mission-code"
-          aria-label="Код решения"
-          aria-describedby="editor-shortcut"
+        <AssistedCodeInput
+          key={fileName}
+          language={languageFromFile(fileName)}
+          mode={assistMode}
           value={value}
-          onChange={(event) => onChange(event.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={onChange}
+          onRun={onRun}
           onScroll={(event) => {
             if (linesRef.current) linesRef.current.scrollTop = event.currentTarget.scrollTop
           }}
-          spellCheck={false}
-          maxLength={20000}
-          autoCapitalize="off"
-          autoCorrect="off"
         />
       </div>
       <div className="editor-footer">

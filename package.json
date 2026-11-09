@@ -15,6 +15,7 @@
     "preview": "vite preview",
     "start": "node server/index.mjs",
     "test:cloud": "node --test qa/cloud-progress.test.mjs",
+    "test:editor": "node --experimental-strip-types --test qa/code-assist.test.mjs",
     "test:games": "node --experimental-strip-types --test qa/game-lab.test.mjs",
     "test:world": "node --experimental-strip-types --test qa/adventure-world.test.mjs",
     "test:python": "node --test qa/python.test.mjs",

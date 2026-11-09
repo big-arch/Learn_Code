@@ -129,7 +129,7 @@ function ArenaLesson({ courseId, onCourseChange, onNotify, lessonIndex, onLesson
         </div>
 
         <div className="arena-editor">
-          <CodeEditor value={code} fileName={fileNames[course.id]} activeLine={step ? result?.lines?.[step - 1] : undefined} onChange={changeCode} onRun={runCode} onReset={() => changeCode(course.mission.starterCode)} />
+          <CodeEditor assistMode={course.mission.kind === 'robot' ? 'robot' : 'general'} value={code} fileName={fileNames[course.id]} activeLine={step ? result?.lines?.[step - 1] : undefined} onChange={changeCode} onRun={runCode} onReset={() => changeCode(course.mission.starterCode)} />
         </div>
 
         <aside className="mission-console panel">

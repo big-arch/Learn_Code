@@ -32,7 +32,8 @@ export function AccountDialog() {
       setCooldown(60);setMessage('Письмо отправлено. Открой ссылку на устройстве, где хочешь продолжить обучение. Проверь также папку «Спам».')
     } catch(error) {
       const code=(error as {code?:string}).code
-      setMessage(code==='over_email_send_rate_limit'||code==='over_request_rate_limit'?'Слишком много запросов. Подожди немного и попробуй снова.':code==='email_address_not_authorized'?'Почтовый сервис пока не разрешает отправку на этот адрес. Сообщи владельцу сайта.':'Не удалось отправить письмо. Проверь адрес и соединение, затем повтори.')
+      const status=(error as {status?:number}).status??0
+      setMessage(code==='over_email_send_rate_limit'||code==='over_request_rate_limit'?'Слишком много запросов. Подожди немного и попробуй снова.':code==='email_address_not_authorized'?'Почтовый сервис пока не разрешает отправку на этот адрес. Сообщи владельцу сайта.':status>=500?'Сервис входа не смог отправить письмо. Владельцу сайта нужно проверить журнал отправки и настройки почтового сервиса. Пока можно продолжить обучение без входа.':'Не удалось отправить письмо. Проверь адрес и соединение, затем повтори.')
     } finally {setBusy(false)}
   }
   async function signOut() {

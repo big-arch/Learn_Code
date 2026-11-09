@@ -21,4 +21,5 @@ jobs:
       - run: npm run test:python
       - run: npm run test:world
       - run: npm run test:cloud
+      - run: npm run test:editor
       - run: npm run test:games
