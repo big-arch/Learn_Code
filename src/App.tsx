@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
+import { AccountDialog } from './components/AccountDialog'
 import { AppShell } from './components/AppShell'
 import { GameLab } from './views/GameLab'
 import { Arena } from './components/Arena'
@@ -85,6 +86,7 @@ function AppContent() {
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}
       {view === 'progress' && <ProgressView onStartMission={startMission} onGames={() => navigate('games')} />}
       {view === 'research' && <HandbookView onPython={() => { setPythonStart(null); navigate('python') }} />}
+      <AccountDialog />
       <CourseDialog course={detailCourse} onClose={() => setDetailCourse(null)} onStart={() => detailCourse && startMission(detailCourse.id)} />
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onNavigate={navigate} onStartMission={startMission} />
       <div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite" aria-atomic="true">

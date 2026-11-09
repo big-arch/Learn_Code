@@ -2,6 +2,7 @@ import type { ProgressState } from '../types'
 import { allMissions } from '../data/lessons'
 import { pythonProgressItems } from '../data/pythonCourse'
 import { islandProgressItems } from '../data/adventure'
+import videoData from '../data/python-video.json'
 import labLevels from '../data/game-lab.json'
 const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels]
 
@@ -74,4 +75,10 @@ export function persistProgress(state: ProgressState) {
   } catch {
     return false
   }
+}
+
+export function loadGuestForImport(): ProgressState {
+  const guest=loadProgress(),drafts={...guest.drafts}
+  try { for(const lab of videoData.labs) {const code=localStorage.getItem('code-arena:video-draft:'+lab.id);if(code!==null&&code.length<=20000)drafts['video-'+lab.id]=code} } catch { /* Existing browser draft remains intact. */ }
+  return {...guest,drafts}
 }

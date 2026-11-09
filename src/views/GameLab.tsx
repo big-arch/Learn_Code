@@ -40,13 +40,17 @@ export function GameLab() {
 function LabMission({level, number, onNext, last}: {level: LabLevel; number: number; onNext: () => void; last: boolean}) {
   const { progress, completeMission, saveDraft } = useProgress()
   const stored = progress.drafts[level.id]
-  const [initial] = useState(() => {
+  const initial = (() => {
     try { const v = JSON.parse(stored || '{}'); return { language: languages.some(l => l.id === v.language) ? v.language as LanguageId : 'python' as LanguageId, source: typeof v.source === 'string' ? v.source : '', blocks: Array.isArray(v.blocks) ? v.blocks.filter((b: CommandBlock) => directions.some(d => d.id === b.direction) && Number.isInteger(b.count) && b.count >= 1 && b.count <= 4).slice(0,12) as CommandBlock[] : [], text: v.text === true } } catch { return {language:'python' as LanguageId, source: '', blocks: [] as CommandBlock[], text:false} }
-  })
-  const [language, setLanguage] = useState<LanguageId>(initial.language)
-  const [blocks, setBlocks] = useState<CommandBlock[]>(initial.blocks)
-  const [textMode, setTextMode] = useState(initial.text)
-  const [source, setSource] = useState(level.mode === 'robot' ? initial.source : stored || '')
+  })()
+  const draftRef=useRef(initial);draftRef.current=initial
+  const updateDraft=(patch:Partial<typeof initial>)=>{draftRef.current={...draftRef.current,...patch};saveDraft(level.id,JSON.stringify(draftRef.current))}
+  const language=initial.language,blocks=initial.blocks,textMode=initial.text
+  const source=level.mode==='robot'?initial.source:stored||''
+  const setLanguage=(value:LanguageId)=>updateDraft({language:value})
+  const setBlocks=(value:CommandBlock[])=>updateDraft({blocks:value})
+  const setTextMode=(value:boolean)=>updateDraft({text:value})
+  const setSource=(value:string)=>level.mode==='robot'?updateDraft({source:value}):saveDraft(level.id,value)
   const [message, setMessage] = useState('')
   const [won, setWon] = useState(false)
   const [hint, setHint] = useState(false)
@@ -59,10 +63,6 @@ function LabMission({level, number, onNext, last}: {level: LabLevel; number: num
   const code = level.mode === 'robot' && !textMode ? blocksToCode(blocks, language) : source
   const parsed = level.mode === 'flex' || level.mode === 'grid' ? labStyle(code, level.mode) : null
   const completed = progress.completed.includes(level.id)
-  useEffect(() => {
-    const value = level.mode === 'robot' ? JSON.stringify({language, blocks, source, text:textMode}) : source
-    if (stored !== value) saveDraft(level.id, value)
-  }, [source, blocks, language, textMode, level.id, level.mode, saveDraft, stored])
   const succeed = () => {
     const fresh = completeMission(level.id, level.xp)
     setWon(true); setMessage(fresh ? `Получилось! +${level.xp} XP. ${level.mode === 'robot' ? 'Искра доставила кристалл.' : 'Твой код изменил мир.'}` : 'Получилось! Этот уровень уже пройден — можно двигаться дальше.')

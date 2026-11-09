@@ -51,7 +51,7 @@ function ArenaLesson({ courseId, onCourseChange, onNotify, lessonIndex, onLesson
   const lessons = getLessons(baseCourse)
   const course = { ...baseCourse, mission: lessons[lessonIndex] ?? lessons[0] }
   const notes = lessonNotes(course)
-  const [code, setCode] = useState(progress.drafts[course.mission.id] ?? course.mission.starterCode)
+  const code = progress.drafts[course.mission.id] ?? course.mission.starterCode
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [hintIndex, setHintIndex] = useState(-1)
   const [step, setStep] = useState(0)
@@ -67,7 +67,6 @@ function ArenaLesson({ courseId, onCourseChange, onNotify, lessonIndex, onLesson
   }, [playing, result, step])
 
   const changeCode = (value: string) => {
-    setCode(value)
     setResult(null)
     setStep(0)
     setPlaying(false)

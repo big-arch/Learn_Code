@@ -1,6 +1,7 @@
 import { BarChart3, BookOpen, Code2, Compass, Gamepad2, Home, Search, Sparkles, Volume2, VolumeX, Zap } from 'lucide-react'
 import { LofiPlayer } from './LofiPlayer'
 import type { ReactNode } from 'react'
+import { useAccount } from '../state/useAccount'
 import { useProgress } from '../state/useProgress'
 import type { ViewId } from '../types'
 
@@ -23,6 +24,7 @@ interface AppShellProps {
 }
 
 export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShellProps) {
+  const {user,configured,setOpen}=useAccount()
   const { progress, setSound } = useProgress()
   const level = Math.floor(progress.xp / 500) + 1
   const levelXp = progress.xp % 500
@@ -83,6 +85,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
             <button className="icon-button" type="button" onClick={() => setSound(!progress.sound)} aria-label={progress.sound ? 'Выключить звуки победы' : 'Включить звуки победы'} aria-pressed={progress.sound}>
               {progress.sound ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
             </button>
+            {configured&&<button type="button" className="account-trigger" onClick={()=>setOpen(true)} aria-label={user?'Открыть аккаунт':'Войти по почте'}>{user?'Аккаунт':'Войти'}</button>}
             <button className="avatar" type="button" onClick={() => onNavigate('progress')} aria-label="Открыть профиль и прогресс">YOU</button>
           </div>
         </header>

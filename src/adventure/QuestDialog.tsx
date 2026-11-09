@@ -9,7 +9,8 @@ import { useProgress } from '../state/useProgress'
 export function QuestDialog({quest,onClose,onSolved}:{quest:IslandQuest;onClose:()=>void;onSolved:()=>void}) {
   const {progress,saveDraft,completeMission}=useProgress()
   const dialog=useRef<HTMLDialogElement>(null),runner=useRef(new PythonRunner()),alive=useRef(true),running=useRef(false)
-  const [practice,setPractice]=useState(false),[code,setCode]=useState(progress.drafts[quest.id]??quest.starter)
+  const [practice,setPractice]=useState(false)
+  const code=progress.drafts[quest.id]??quest.starter
   const [input,setInput]=useState(quest.stdin),[result,setResult]=useState<PythonResult|null>(null)
   const [busy,setBusy]=useState(false),[status,setStatus]=useState(''),[error,setError]=useState(''),[hint,setHint]=useState(false)
   const completed=progress.completed.includes(quest.id)
@@ -22,7 +23,7 @@ export function QuestDialog({quest,onClose,onSolved}:{quest:IslandQuest;onClose:
     element?.showModal()
     return()=>{alive.current=false;current.stop();element?.close()}
   },[])
-  const change=(value:string)=>{runner.current.stop();setCode(value);saveDraft(quest.id,value);setResult(null);setError('')}
+  const change=(value:string)=>{runner.current.stop();saveDraft(quest.id,value);setResult(null);setError('')}
   const run=async()=>{
     if(running.current)return
     running.current=true;setBusy(true);setResult(null);setError('')

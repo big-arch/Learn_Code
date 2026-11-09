@@ -5,6 +5,9 @@ import { STORAGE_KEY, normalizeProgress } from '../lib/storage'
 import { fetchProgress, syncProgress } from '../lib/progressApi'
 import type { ProgressState } from '../types'
 import { ProgressContext } from './useProgress'
+import { AccountProvider } from './AccountProvider'
+import { CloudProgressProvider } from './CloudProgressProvider'
+import { useAccount } from './useAccount'
 import type { ProgressContextValue } from './useProgress'
 
 const browserOnly = import.meta.env.MODE === 'pages'
@@ -22,7 +25,7 @@ const previousDate = () => {
   return localDate(date)
 }
 
-export function ProgressProvider({ children }: { children: ReactNode }) {
+function GuestProgressProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<ProgressState>(loadProgress)
   const [ready, setReady] = useState(browserOnly)
   const [storageStatus, setStorageStatus] = useState(browserOnly ? 'Сохранение в этом браузере' : 'Подключаем сохранение…')
@@ -92,4 +95,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }), [progress, storageStatus])
 
   return <ProgressContext.Provider value={value}>{ready ? children : <div className="loading-screen" role="status">КОД:АРЕНА <span>Готовим твой учебный мир…</span></div>}</ProgressContext.Provider>
+}
+
+function ProgressRouter({children}:{children:ReactNode}) {
+  const {ready,user}=useAccount()
+  if(!ready)return <div className="loading-screen" role="status">Проверяем вход…</div>
+  return user?<CloudProgressProvider key={user.id} userId={user.id}>{children}</CloudProgressProvider>:<GuestProgressProvider key="guest">{children}</GuestProgressProvider>
+}
+export function ProgressProvider({children}:{children:ReactNode}) {
+  return <AccountProvider><ProgressRouter>{children}</ProgressRouter></AccountProvider>
 }

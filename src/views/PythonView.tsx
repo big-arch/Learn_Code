@@ -32,7 +32,7 @@ export function PythonView({ startChapter = null, onAdventure }: { startChapter?
 function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;index:number;onPrevious:()=>void;onNext:()=>void}) {
   const {progress,completeMission,saveDraft,storageStatus}=useProgress()
   const [tab,setTab]=useState<'theory'|'quiz'|'code'>('theory')
-  const [code,setCode]=useState(progress.drafts[lesson.id]??lesson.starter)
+  const code=progress.drafts[lesson.id]??lesson.starter
   const [stdin,setStdin]=useState(lesson.stdin)
   const [answer,setAnswer]=useState<number|null>(null),[checked,setChecked]=useState(false)
   const [result,setResult]=useState<PythonResult|null>(null),[busy,setBusy]=useState(false),[status,setStatus]=useState(''),[error,setError]=useState('')
@@ -51,7 +51,7 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
     catch(e){if(alive.current)setError((e as Error).message)}
     finally{busyRef.current=false;if(alive.current){setBusy(false);setStatus('')}}
   }
-  const change=(value:string)=>{if(busyRef.current)runner.current.stop();setCode(value);saveDraft(lesson.id,value);setResult(null);setVisual(null);setActiveLine(undefined);setError('')}
+  const change=(value:string)=>{if(busyRef.current)runner.current.stop();saveDraft(lesson.id,value);setResult(null);setVisual(null);setActiveLine(undefined);setError('')}
   const checkAnswer=()=>{setChecked(true);if(answer===lesson.quiz.correct)completeMission(lesson.id+'-quiz',10)}
   const download=()=>{const blob=new Blob([code],{type:'text/x-python;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=lesson.id+'.py';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   return <>

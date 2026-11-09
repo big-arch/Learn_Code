@@ -11,7 +11,7 @@ import type { LanguageId } from '../types'
 const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
 
 export function ProgressView({ onStartMission, onGames }: { onStartMission: (id: LanguageId) => void; onGames: () => void }) {
-  const { progress, storageStatus, setSound, setMotion, resetProgress } = useProgress()
+  const { progress, cloud, storageStatus, setSound, setMotion, resetProgress } = useProgress()
   const resetRef = useRef<HTMLDialogElement>(null)
   const level = Math.floor(progress.xp / 500) + 1
   const levelXp = progress.xp % 500
@@ -50,7 +50,7 @@ export function ProgressView({ onStartMission, onGames }: { onStartMission: (id:
           <div className="panel-heading"><div><span className="section-kicker">КОМФОРТ</span><h2>Настройки</h2></div><Settings2 size={22} /></div>
           <button className="setting-row" type="button" onClick={() => setSound(!progress.sound)} aria-pressed={progress.sound}><span>{progress.sound ? <Volume2 size={19} /> : <VolumeX size={19} />}</span><div><strong>Звуковой отклик</strong><small>Короткий сигнал после победы</small></div><i className={`toggle ${progress.sound ? 'on' : ''}`}><b /></i></button>
           <button className="setting-row" type="button" onClick={() => setMotion(!progress.motion)} aria-pressed={progress.motion}><span>{progress.motion ? <Play size={19} /> : <Pause size={19} />}</span><div><strong>3D-движение</strong><small>Можно остановить в любой момент</small></div><i className={`toggle ${progress.motion ? 'on' : ''}`}><b /></i></button>
-          <div className="local-data-note"><ShieldCheck size={19} /><p>{storageStatus}. {import.meta.env.MODE === 'pages' ? 'Прогресс хранится только в этом браузере. На другом устройстве начнётся отдельное прохождение.' : 'Черновики и прогресс сохраняются в браузере и локальной SQL-базе, когда сервер доступен.'}</p></div>
+          <div className="local-data-note"><ShieldCheck size={19} /><p>{storageStatus}. {cloud ? 'Прогресс связан с аккаунтом и синхронизируется между устройствами. При потере сети изменения остаются на этом устройстве.' : import.meta.env.MODE === 'pages' ? 'Прогресс хранится только в этом браузере. На другом устройстве начнётся отдельное прохождение.' : 'Черновики и прогресс сохраняются в браузере и локальной SQL-базе, когда сервер доступен.'}</p></div>
           <button className="reset-button" type="button" onClick={() => resetRef.current?.showModal()}><RotateCcw size={15} />Сбросить прогресс</button>
         </section>
       </div>
@@ -75,7 +75,7 @@ export function ProgressView({ onStartMission, onGames }: { onStartMission: (id:
 
       <dialog ref={resetRef} className="confirm-dialog" aria-labelledby="reset-title">
         <div className="dialog-topline"><span>ЛОКАЛЬНЫЕ ДАННЫЕ</span><form method="dialog"><button className="icon-button" aria-label="Отменить сброс"><X size={18} /></button></form></div>
-        <Award size={34} /><h2 id="reset-title">Начать с чистого листа?</h2><p>XP, черновики, миссии и достижения будут сброшены в браузере и при следующем сохранении в SQL. Это действие нельзя отменить.</p>
+        <Award size={34} /><h2 id="reset-title">Начать с чистого листа?</h2><p>{cloud ? 'Прогресс аккаунта будет сброшен в облаке и на подключённых устройствах. Локальная копия до сброса останется в аккаунте для скачивания.' : 'XP, черновики, миссии и достижения будут сброшены в гостевом профиле и при следующем сохранении в SQL.'}</p>
         <div className="confirm-actions"><form method="dialog"><button className="button secondary" autoFocus>Оставить прогресс</button></form><button className="button danger" type="button" onClick={() => { resetProgress(); resetRef.current?.close() }}>Да, сбросить</button></div>
       </dialog>
     </div>

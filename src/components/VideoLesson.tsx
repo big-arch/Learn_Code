@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, ChevronDown, Film, Square } from 'lucide-react'
 import data from '../data/python-video.json'
+import { useProgress } from '../state/useProgress'
 import { PythonRunner } from '../lib/pythonRunner'
 import type { PythonResult } from '../lib/pythonRunner'
 import { CodeEditor } from './CodeEditor'
@@ -44,10 +45,14 @@ export function VideoLesson({ lessonId }: { lessonId: string }) {
 }
 
 function VideoLab({ lab }: { lab: Lab }) {
+  const {progress,cloud,saveDraft}=useProgress()
+  const cloudKey='video-'+lab.id
   const draftKey = 'code-arena:video-draft:' + lab.id
-  const [code, setCode] = useState(() => {
+  const [guestCode, setCode] = useState(() => {
+    if(cloud)return lab.starter
     try { const saved = localStorage.getItem(draftKey); return saved !== null && saved.length <= 20000 ? saved : lab.starter } catch { return lab.starter }
   })
+  const code=cloud?(progress.drafts[cloudKey]??lab.starter):guestCode
   const [draftWarning, setDraftWarning] = useState('')
   const [result, setResult] = useState<PythonResult | null>(null)
   const [source, setSource] = useState(''), [demo, setDemo] = useState(false)
@@ -60,6 +65,7 @@ function VideoLab({ lab }: { lab: Lab }) {
   const change = (value: string) => {
     token.current.request++; runner.current.stop(); running.current = false; setBusy(false); setStatus('')
     setCode(value); setResult(null); setError(''); setActiveLine(undefined)
+    if(cloud){saveDraft(cloudKey,value);return}
     try { localStorage.setItem(draftKey, value); setDraftWarning('') } catch { setDraftWarning('Не удалось сохранить черновик на устройстве. Скопируй код перед выходом.') }
   }
   const run = async (example = false) => {
@@ -81,7 +87,7 @@ function VideoLab({ lab }: { lab: Lab }) {
     </div>
     <div className="video-lab-grid">
       <div><CodeEditor value={code} fileName={lab.id + '.py'} onChange={change} onRun={() => void run()} onReset={() => change(lab.starter)} activeLine={activeLine} />
-        <p className="video-draft-note">Дополнительная практика без XP. Черновик сохраняется на этом устройстве.</p>
+        <p className="video-draft-note">Дополнительная практика без XP. {cloud?'Черновик синхронизируется с аккаунтом.':'Черновик сохраняется на этом устройстве.'}</p>
         {draftWarning && <p role="alert">{draftWarning}</p>}
         <div className="video-run-status" role="status">{busy ? status : passed ? 'Готово! Все проверки пройдены.' : result && !demo ? 'Запуск завершён. Посмотри результат и проверки.' : ''}</div>
         {busy && <button type="button" className="button secondary" onClick={() => runner.current.stop()}><Square size={16} />Остановить Python</button>}
