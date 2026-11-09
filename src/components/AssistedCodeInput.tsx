@@ -41,13 +41,17 @@ export function AssistedCodeInput({id,value,onChange,onRun,language,mode='genera
   useEffect(()=>{
     const el=input.current
     if(!autoGrow||!el)return
-    let width=el.clientWidth,live=true
+    let width=el.clientWidth,live=true,resizeFrame=0
     const observer=new ResizeObserver(()=>{
-      if(el.clientWidth!==width){width=el.clientWidth;fitContent(el)}
+      if(el.clientWidth!==width){
+        width=el.clientWidth
+        cancelAnimationFrame(resizeFrame)
+        resizeFrame=requestAnimationFrame(()=>fitContent(el))
+      }
     })
     observer.observe(el)
     void document.fonts.ready.then(()=>{if(live)fitContent(el)})
-    return()=>{live=false;observer.disconnect()}
+    return()=>{live=false;observer.disconnect();cancelAnimationFrame(resizeFrame)}
   },[autoGrow])
 
   useEffect(()=>{
