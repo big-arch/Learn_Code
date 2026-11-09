@@ -10,7 +10,7 @@ import { CodeEditor } from '../components/CodeEditor'
 import { BookReading } from '../components/BookReading'
 import { VideoCourseSources, VideoLesson } from '../components/VideoLesson'
 
-export function PythonView({ startChapter = null, onAdventure }: { startChapter?: number | null; onAdventure?: () => void }) {
+export function PythonView({ startChapter = null, onAdventure, onPractice }: { startChapter?: number | null; onAdventure?: () => void; onPractice?: () => void }) {
   const { progress }=useProgress()
   const [index,setIndex]=useState(()=>startChapter!==null?startChapter*4:Math.max(0,pythonLessons.findIndex(l=>!progress.completed.includes(l.id))))
   const completed=pythonLessons.filter(l=>progress.completed.includes(l.id)).length
@@ -20,6 +20,7 @@ export function PythonView({ startChapter = null, onAdventure }: { startChapter?
     <div className="course-topline"><span className="section-kicker">ПУТЬ ИССЛЕДОВАТЕЛЯ / PYTHON</span><span>{completed} / 24 урока</span></div>
     <div className="python-heading"><div><h1>От первой строки<br/>к своей программе.</h1><p>24 урока · 6 глав · теория, практика и собственный проект</p></div><div className="course-progress-ring" style={{'--completion':completed/24*100+'%'} as React.CSSProperties}><span>{Math.round(completed/24*100)}<small>%</small></span></div></div>
     {onAdventure&&<button type="button" className="course-adventure-link" onClick={onAdventure}>Закрепить первые 4 темы в игре «Остров Тихой бухты» <ArrowRight size={17}/></button>}
+    {onPractice&&<button type="button" className="course-adventure-link" onClick={onPractice}>Практикум почты: условия, циклы, функции и свой проект <ArrowRight size={17}/></button>}
     <VideoCourseSources onSelect={select}/>
     <div className="python-layout">
       <details className="syllabus" open><summary><BookOpen size={18}/> Программа курса</summary>
@@ -58,7 +59,7 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
     <header className="lesson-header"><span>Глава {lesson.chapter+1} · Урок {index+1} · около {lesson.minutes} минут</span><h2>{lesson.title}</h2><p>{lesson.story}</p></header>
     <div className="lesson-step-tabs" role="tablist" aria-label="Этапы урока">{([{id:'theory',label:'Разобраться',icon:BookOpen},{id:'quiz',label:'Проверить себя',icon:Lightbulb},{id:'code',label:'Написать код',icon:Code2}] as const).map((t,i)=><button key={t.id} type="button" role="tab" tabIndex={tab===t.id?0:-1} onKeyDown={e=>{const ids=['theory','quiz','code'] as const;let next=i;if(e.key==='ArrowRight')next=(i+1)%3;else if(e.key==='ArrowLeft')next=(i+2)%3;else if(e.key==='Home')next=0;else if(e.key==='End')next=2;else return;e.preventDefault();setTab(ids[next]);document.getElementById('tab-'+ids[next])?.focus()}} aria-selected={tab===t.id} aria-controls={'panel-'+t.id} id={'tab-'+t.id} onClick={()=>setTab(t.id)}><span>0{i+1}</span><t.icon size={16}/>{t.label}{t.id==='quiz'&&quizDone&&<Check size={14}/>}</button>)}</div>
     {tab==='theory'&&<section id="panel-theory" role="tabpanel" aria-labelledby="tab-theory" className="theory-panel">
-      <div className="theory-copy"><span className="reading-label">СНАЧАЛА ПОЙМИ ИДЕЮ</span><h3>{lesson.reading.title}</h3><p>{lesson.reading.explanation}</p>{lesson.theory.slice(1).map((p,i)=><p key={i}>{p}</p>)}</div>
+      <div className="theory-copy"><p className="lesson-goal"><strong>Результат урока:</strong> {lesson.task}</p><span className="reading-label">СНАЧАЛА ПОЙМИ ИДЕЮ</span><h3>{lesson.reading.title}</h3><p>{lesson.reading.explanation}</p>{lesson.theory.slice(1).map((p,i)=><p key={i}>{p}</p>)}</div>
       <div className="example-card"><div><span>Разобранный пример</span><span>Python</span></div><pre><code>{lesson.example}</code></pre><div className="example-output"><span>Что получится</span><pre>{lesson.exampleOutput}</pre></div></div>
       <div className="book-walkthrough"><h3>Разберём пример по шагам</h3><ol>{lesson.reading.walkthrough.map(step=><li key={step}>{step}</li>)}</ol><button className="button secondary" type="button" onClick={()=>{setTab('code');void run(true)}}>Посмотреть выполнение примера <ArrowRight size={17}/></button></div>
       <div className="book-experiment"><h3>Маленький эксперимент</h3><p>{lesson.reading.experiment}</p><details><summary>Проверить своё объяснение</summary><p>{lesson.reading.answer}</p></details></div>
@@ -75,6 +76,7 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
     </section>}
     {tab==='code'&&<section id="panel-code" role="tabpanel" aria-labelledby="tab-code" className="practice-panel">
       <div className="practice-task"><span className="reading-label">ТВОЯ МИССИЯ</span><p>{lesson.task}</p></div>
+      <details className="lesson-acceptance"><summary>Что проверяется в твоём решении</summary><ul>{lesson.checks.map(c=><li key={c.label}>{c.label}</li>)}</ul></details>
       <div className="python-lab-grid"><div><CodeEditor activeLine={activeLine} value={code} fileName={'lesson_'+(index+1)+'.py'} onChange={change} onRun={()=>void run()} onReset={()=>change(lesson.starter)}/>
         <div className="python-run-tools"><label>Ввод для input()<textarea aria-label="Ввод для Python" value={stdin} maxLength={10000} onChange={e=>{if(busyRef.current)runner.current.stop();setStdin(e.target.value);setResult(null);setVisual(null);setActiveLine(undefined)}} rows={2} placeholder="Один ответ на строку"/></label><button type="button" className="button secondary" onClick={download}><Download size={15}/>Скачать .py</button></div>
         {busy&&<div className="python-loading" role="status"><i/>{status}<button type="button" onClick={()=>runner.current.stop()}><Square size={14}/> Остановить</button></div>}

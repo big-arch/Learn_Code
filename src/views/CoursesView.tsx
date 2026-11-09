@@ -3,15 +3,18 @@ import { ArrowRight, BookOpen, Check, Clock3, Play, Search, SlidersHorizontal, X
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
 import type { Course, LanguageId } from '../types'
+import { LearningPaths } from './PracticeView'
+import type { PracticeTrack } from '../lib/practice'
 
 interface CoursesViewProps {
   onOpenCourse: (course: Course) => void
   onStartMission: (id: LanguageId) => void
+  onPractice: (track: PracticeTrack) => void
 }
 
 type LevelFilter = 'all' | 'Новичок' | 'Базовый'
 
-export function CoursesView({ onOpenCourse, onStartMission }: CoursesViewProps) {
+export function CoursesView({ onOpenCourse, onStartMission, onPractice }: CoursesViewProps) {
   const { progress } = useProgress()
   const [query, setQuery] = useState('')
   const [level, setLevel] = useState<LevelFilter>('all')
@@ -28,6 +31,7 @@ export function CoursesView({ onOpenCourse, onStartMission }: CoursesViewProps) 
     <div className="courses-view view-enter">
       <div className="view-heading"><div><span className="section-kicker">КАТАЛОГ // 6 НАПРАВЛЕНИЙ</span><h1>Твоя траектория<span>.</span></h1><p>Начни с Python: 24 урока от первой строки до проекта. Ещё пять направлений можно попробовать в коротких игровых миссиях.</p></div><div className="catalog-price"><span>ВСЕ КУРСЫ</span><strong>0 ₽</strong><small>без пробного периода</small></div></div>
 
+      <LearningPaths onOpen={onPractice}/>
       <div className="catalog-controls">
         <label className="catalog-search"><Search size={18} aria-hidden="true" /><span className="visually-hidden">Поиск курсов</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Язык, навык или проект" />{query && <button type="button" onClick={() => setQuery('')} aria-label="Очистить поиск"><X size={16} /></button>}</label>
         <div className="level-filters" aria-label="Фильтр по уровню"><SlidersHorizontal size={17} aria-hidden="true" />{(['all', 'Новичок', 'Базовый'] as const).map((item) => <button type="button" key={item} className={level === item ? 'active' : ''} onClick={() => setLevel(item)} aria-pressed={level === item}>{item === 'all' ? 'Все уровни' : item}</button>)}</div>

@@ -24,3 +24,4 @@ jobs:
       - run: npm run test:editor
       - run: npm run test:games
       - run: npm run test:mechanisms
+      - run: npm run test:practice

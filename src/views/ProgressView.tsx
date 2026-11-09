@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw, Settings2, ShieldCheck, Sparkles, Trophy, Volume2, VolumeX, X, Zap } from 'lucide-react'
+import { BookOpen, Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw, Settings2, ShieldCheck, Sparkles, Trophy, Volume2, VolumeX, X, Zap } from 'lucide-react'
 import { allMissions, getLessons, completedWorlds, nextCourseFor } from '../data/lessons'
 import { islandQuests } from '../data/adventure'
 import { pythonLessons } from '../data/pythonCourse'
 import classicLabLevels from '../data/game-lab.json'
 import mechanisms from '../data/mechanism-missions.json'
+import practiceLessons from '../data/practice-lessons.json'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
 import type { LanguageId } from '../types'
@@ -12,7 +13,7 @@ import type { LanguageId } from '../types'
 const labLevels = [...classicLabLevels, ...mechanisms]
 const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
 
-export function ProgressView({ onStartMission, onGames }: { onStartMission: (id: LanguageId) => void; onGames: () => void }) {
+export function ProgressView({ onStartMission, onGames, onPractice }: { onStartMission: (id: LanguageId) => void; onGames: () => void; onPractice: () => void }) {
   const { progress, cloud, storageStatus, setSound, setMotion, resetProgress } = useProgress()
   const resetRef = useRef<HTMLDialogElement>(null)
   const level = Math.floor(progress.xp / 500) + 1
@@ -38,9 +39,10 @@ export function ProgressView({ onStartMission, onGames }: { onStartMission: (id:
       <section className="progress-hero panel">
         <div className="level-emblem"><span>УРОВЕНЬ</span><strong>{String(level).padStart(2, '0')}</strong><div className="level-orbit"><i /><i /></div></div>
         <div className="level-details"><span className="section-kicker">РАЗРАБОТЧИК · {level < 3 ? 'НАЧАЛО ПУТИ' : 'УВЕРЕННЫЙ СТАРТ'}</span><h2>{progress.xp} <span>XP</span></h2><p>{levelXp} из 500 XP до уровня {String(level + 1).padStart(2, '0')}</p><div className="level-progress"><i style={{ width: `${levelXp / 5}%` }} /></div></div>
-        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length + islandQuests.length + labLevels.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
+        <div className="progress-metrics"><div><Gamepad2 size={20} /><strong>{lessonsDone}<span>/{allMissions.length + pythonLessons.length + islandQuests.length + labLevels.length + practiceLessons.length}</span></strong><small>уроков и миссий</small></div><div><Flame size={20} /><strong>{progress.streak}</strong><small>дней в серии</small></div><div><BarChart3 size={20} /><strong>{total}</strong><small>за неделю</small></div></div>
       </section>
 
+      <section className="adventure-banner"><BookOpen size={28}/><div><h2>Практикумы: {practiceLessons.filter(l => progress.completed.includes(l.id)).length} / {practiceLessons.length}</h2><p>Почтовый диспетчер на Python и сайт станции на HTML/CSS. Два маршрута от упражнения до проекта.</p></div><button className="button primary" type="button" onClick={onPractice}>Продолжить практикум</button></section>
       <div className="progress-layout">
         <section className="activity-panel panel">
           <div className="panel-heading"><div><span className="section-kicker">АКТИВНОСТЬ · 7 ДНЕЙ</span><h2>Твой ритм</h2></div><span className="soft-chip">{total} шагов</span></div>

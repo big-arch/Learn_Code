@@ -18,6 +18,7 @@
     "test:editor": "node --experimental-strip-types --test qa/code-assist.test.mjs",
     "test:games": "node --experimental-strip-types --test qa/game-lab.test.mjs",
     "test:mechanisms": "node --test qa/mechanisms.test.mjs",
+    "test:practice": "node --test qa/practice.test.mjs",
     "test:world": "node --experimental-strip-types --test qa/adventure-world.test.mjs",
     "test:python": "node --test qa/python.test.mjs",
     "test:api": "node --test qa/api.test.mjs"

@@ -14,9 +14,12 @@ import { PythonView } from './views/PythonView'
 import { HandbookView } from './views/HandbookView'
 import { MapView } from './views/MapView'
 import { ProgressView } from './views/ProgressView'
+import { PracticeView } from './views/PracticeView'
+import type { PracticeTrack } from './lib/practice'
 import type { Course, LanguageId, ViewId } from './types'
 
 const titles: Record<ViewId, string> = {
+  practice: 'Практикум: Python, HTML и CSS — КОД:АРЕНА',
   games: 'Игровая мастерская — КОД:АРЕНА',
   adventure: 'Остров Тихой бухты — КОД:АРЕНА',
   home: 'КОД:АРЕНА — программирование через игру',
@@ -34,6 +37,7 @@ function AppContent() {
   const [detailCourse, setDetailCourse] = useState<Course | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [pythonStart, setPythonStart] = useState<number | null>(null)
+  const [practiceTrack, setPracticeTrack] = useState<PracticeTrack>('python')
   const [toast, setToast] = useState('')
   const toastTimer = useRef<number | null>(null)
 
@@ -79,12 +83,13 @@ function AppContent() {
     <AppShell view={view} onNavigate={navigate} onOpenPalette={() => setPaletteOpen(true)}>
       {view === 'home' && <StudioHome onNavigate={navigate} onPython={(chapter) => { setPythonStart(chapter ?? null); navigate('python') }} />}
       {view === 'adventure' && <AdventureView onCourse={() => { setPythonStart(null); navigate('python') }} />}
-      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onAdventure={()=>navigate('adventure')} />}
-      {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} />}
+      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onAdventure={()=>navigate('adventure')} onPractice={() => { setPracticeTrack('python'); navigate('practice') }} />}
+      {view === 'practice' && <PracticeView key={practiceTrack} startTrack={practiceTrack} onPython={chapter => { setPythonStart(chapter); navigate('python') }} />}
+      {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} onPractice={track => { setPracticeTrack(track); navigate('practice') }} />}
       {view === 'map' && <MapView onStartMission={startMission} />}
       {view === 'games' && <GameLab />}
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}
-      {view === 'progress' && <ProgressView onStartMission={startMission} onGames={() => navigate('games')} />}
+      {view === 'progress' && <ProgressView onStartMission={startMission} onGames={() => navigate('games')} onPractice={() => navigate('practice')} />}
       {view === 'research' && <HandbookView onPython={() => { setPythonStart(null); navigate('python') }} />}
       <AccountDialog />
       <CourseDialog course={detailCourse} onClose={() => setDetailCourse(null)} onStart={() => detailCourse && startMission(detailCourse.id)} />

@@ -1,0 +1,558 @@
+[
+  {
+    "id": "practice-v1-python-01",
+    "track": "python",
+    "title": "Собери утренний маршрут",
+    "skill": "Порядок выполнения",
+    "kind": "order",
+    "brief": "Почтовая станция просыпается. Три команды перепутаны, и диспетчер не может объявить маршрут.",
+    "theory": [
+      "Python выполняет обычные команды сверху вниз. Сначала нужно создать значение, затем его использовать.",
+      "Присваивание связывает имя со значением. print() выводит результат. Перестановка строк может изменить поведение программы."
+    ],
+    "task": "Расположи три строки так, чтобы программа напечатала: Маршрут: Маяк. Можно двигать строки кнопками или править код.",
+    "starter": "print(message)\nmessage = \"Маршрут: \" + place\nplace = \"Маяк\"",
+    "solution": "place = \"Маяк\"\nmessage = \"Маршрут: \" + place\nprint(message)",
+    "checks": [
+      {
+        "label": "Название маршрута создано",
+        "expression": "place == 'Маяк'"
+      },
+      {
+        "label": "Сообщение использует название",
+        "expression": "message == 'Маршрут: Маяк'"
+      },
+      {
+        "label": "Сообщение напечатано",
+        "expression": "__output__.strip() == message"
+      }
+    ],
+    "example": "place = \"Сад\"\nmessage = \"Маршрут: \" + place\nprint(message)",
+    "exampleOutput": "Маршрут: Сад",
+    "hints": [
+      "Нельзя читать place раньше присваивания.",
+      "Начни с place, затем создай message.",
+      "Последней должна быть строка print(message)."
+    ],
+    "expected": "Маршрут: Маяк",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-python-02",
+    "track": "python",
+    "title": "Почини счётчик посылок",
+    "skill": "Типы и отладка",
+    "kind": "debug",
+    "brief": "Сканер передаёт число текстом. Вместо прибавления посылок программа выдаёт ошибку.",
+    "theory": [
+      "Строка \"4\" и число 4 имеют разные типы. Оператор + не складывает строку с целым числом.",
+      "int(text) превращает числовую строку в целое число. Начни с последней строки ошибки и найди, какие значения встретились в операции."
+    ],
+    "task": "Сохрани scanned = \"4\" и пришедшие 3 посылки. Исправь вычисление total через int(scanned), затем напечатай 7. Формулу проверим и со сканером \"9\".",
+    "starter": "scanned = \"4\"\ntotal = scanned + 3\nprint(total)",
+    "solution": "scanned = \"4\"\ntotal = int(scanned) + 3\nprint(total)",
+    "checks": [
+      {
+        "label": "Сканер всё ещё передаёт строку",
+        "expression": "scanned == '4'"
+      },
+      {
+        "label": "total содержит целое число 7",
+        "expression": "type(total) is int and total == 7"
+      },
+      {
+        "label": "Исправление работает с другим сканером",
+        "expression": "__rerun__({'scanned':'9'}).get('total') == 12"
+      },
+      {
+        "label": "Счётчик напечатан",
+        "expression": "__output__.strip() == '7'"
+      }
+    ],
+    "example": "scanned = \"2\"\ntotal = int(scanned) + 3\nprint(total)",
+    "exampleOutput": "5",
+    "hints": [
+      "Посмотри на тип scanned: кавычки означают текст.",
+      "Преобразуй scanned перед сложением: int(scanned).",
+      "total = int(scanned) + 3. Строку print(total) можно оставить."
+    ],
+    "expected": "7",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-python-03",
+    "track": "python",
+    "title": "Развилка у причала",
+    "skill": "Условия",
+    "kind": "code",
+    "brief": "Тяжёлые посылки отправляются на тележке, лёгкие несёт курьер. Диспетчер должен принимать решение сам.",
+    "theory": [
+      "if проверяет условие. Если оно истинно, выполняется блок с отступом. else задаёт другой путь.",
+      "Знак >= включает граничное значение. Четыре пробела показывают, какие команды относятся к ветке."
+    ],
+    "task": "Сохрани weight = 7. Если вес не меньше 5, route = \"тележка\", иначе route = \"курьер\". Напечатай route. Проверь, что произойдёт при весе 2 и ровно 5.",
+    "starter": "weight = 7\n# Выбери маршрут по весу\nroute = \"\"\nprint(route)",
+    "solution": "weight = 7\nif weight >= 5:\n    route = \"тележка\"\nelse:\n    route = \"курьер\"\nprint(route)",
+    "checks": [
+      {
+        "label": "Исходный вес сохранён",
+        "expression": "weight == 7"
+      },
+      {
+        "label": "Тяжёлая посылка на тележке",
+        "expression": "route == 'тележка'"
+      },
+      {
+        "label": "Лёгкую несёт курьер",
+        "expression": "__rerun__({'weight':2}).get('route') == 'курьер'"
+      },
+      {
+        "label": "Граничный вес 5 тоже на тележке",
+        "expression": "__rerun__({'weight':5}).get('route') == 'тележка'"
+      },
+      {
+        "label": "Маршрут объявлен",
+        "expression": "__output__.strip() == route"
+      }
+    ],
+    "example": "weight = 2\nif weight >= 5:\n    route = \"тележка\"\nelse:\n    route = \"курьер\"\nprint(route)",
+    "exampleOutput": "курьер",
+    "hints": [
+      "Начни с if weight >= 5: и не забудь двоеточие.",
+      "Внутри if присвой route значение \"тележка\".",
+      "В else задай \"курьер\". print(route) ставится после обеих веток без отступа."
+    ],
+    "expected": "тележка",
+    "chapter": 1,
+    "xp": 60,
+    "minutes": 7,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-python-04",
+    "track": "python",
+    "title": "Проверь каждую посылку",
+    "skill": "Циклы и фильтрация",
+    "kind": "code",
+    "brief": "На ленте вперемешку лёгкие и тяжёлые посылки. Собери веса тех, которым нужна тележка.",
+    "theory": [
+      "for перебирает элементы списка. На каждом шаге weight получает следующий вес.",
+      "Пустой список [] станет накопителем. append(value) добавляет элемент в конец списка; if внутри цикла отбирает подходящие элементы."
+    ],
+    "task": "Из списка weights = [2, 7, 1, 6] собери в heavy все веса от 5 включительно в исходном порядке. Напечатай heavy. Формула должна работать и с другим списком.",
+    "starter": "weights = [2, 7, 1, 6]\nheavy = []\n# Проверь каждый вес\nprint(heavy)",
+    "solution": "weights = [2, 7, 1, 6]\nheavy = []\nfor weight in weights:\n    if weight >= 5:\n        heavy.append(weight)\nprint(heavy)",
+    "checks": [
+      {
+        "label": "Список отправлений сохранён",
+        "expression": "weights == [2,7,1,6]"
+      },
+      {
+        "label": "Выбраны веса 7 и 6",
+        "expression": "heavy == [7,6]"
+      },
+      {
+        "label": "Отбор работает с другим списком",
+        "expression": "__rerun__({'weights':[5,1,9]}).get('heavy') == [5,9]"
+      },
+      {
+        "label": "Результат напечатан",
+        "expression": "__output__.strip() == '[7, 6]'"
+      }
+    ],
+    "example": "weights = [1, 8, 3]\nheavy = []\nfor weight in weights:\n    if weight >= 5:\n        heavy.append(weight)\nprint(heavy)",
+    "exampleOutput": "[8]",
+    "hints": [
+      "Нужен цикл for weight in weights:.",
+      "Условие внутри цикла: if weight >= 5:.",
+      "Внутри условия добавляй heavy.append(weight). Можно также использовать генератор списка."
+    ],
+    "expected": "[7, 6]",
+    "chapter": 2,
+    "xp": 60,
+    "minutes": 7,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-python-05",
+    "track": "python",
+    "title": "Сделай правило многоразовым",
+    "skill": "Функции",
+    "kind": "debug",
+    "brief": "Разные курьеры повторяют один расчёт стоимости. Вынеси правило в функцию и исправь потерянный результат.",
+    "theory": [
+      "def создаёт функцию. Параметр получает значение при вызове. return возвращает ответ вызывающему коду.",
+      "print() только печатает. Если функция ничего не возвращает, результат вызова равен None."
+    ],
+    "task": "Исправь postage(weight): стоимость равна 2 * weight + 1. Функция должна возвращать число, а не печатать его. Напечатай результат postage(3).",
+    "starter": "def postage(weight):\n    print(weight * 2 + 1)\n\nfee = postage(3)\nprint(fee)",
+    "solution": "def postage(weight):\n    return weight * 2 + 1\n\nfee = postage(3)\nprint(fee)",
+    "checks": [
+      {
+        "label": "Функция возвращает стоимость для веса 3",
+        "expression": "postage(3) == 7"
+      },
+      {
+        "label": "Другой вес тоже поддерживается",
+        "expression": "postage(5) == 11 and postage(0) == 1"
+      },
+      {
+        "label": "fee хранит число",
+        "expression": "type(fee) is int and fee == 7"
+      },
+      {
+        "label": "Напечатан только результат",
+        "expression": "__output__.strip() == '7'"
+      }
+    ],
+    "example": "def postage(weight):\n    return weight * 2 + 1\n\nprint(postage(2))",
+    "exampleOutput": "5",
+    "hints": [
+      "Посмотри на fee: почему там None?",
+      "Замени внутренний print на return, убрав лишние скобки.",
+      "Внутри функции: return weight * 2 + 1. Внешний print(fee) остаётся."
+    ],
+    "expected": "7",
+    "chapter": 3,
+    "xp": 60,
+    "minutes": 7,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-python-06",
+    "track": "python",
+    "title": "Открой почтовую станцию",
+    "skill": "Итоговый проект",
+    "kind": "project",
+    "brief": "Ты отвечаешь за утреннюю отправку. Одной программой подготовь маршрут и посчитай выручку станции.",
+    "theory": [
+      "Соедини знакомые части: функцию расчёта, список отправлений, цикл и условие.",
+      "Сначала получи работающий расчёт, затем добавь отбор. Проверяй небольшие части программы по очереди. Тесты проверят и другой поток посылок."
+    ],
+    "task": "Создай postage(weight), возвращающую 2 * weight + 1. Для weights = [2, 7, 1, 6] вычисли total_fee по всем посылкам и список heavy с весами от 5. Напечатай total_fee, затем heavy на новой строке.",
+    "starter": "weights = [2, 7, 1, 6]\n# 1. Создай функцию postage\n\n# 2. Посчитай total_fee и собери heavy\n\n# 3. Напечатай два результата",
+    "solution": "weights = [2, 7, 1, 6]\ndef postage(weight):\n    return weight * 2 + 1\n\ntotal_fee = 0\nheavy = []\nfor weight in weights:\n    total_fee += postage(weight)\n    if weight >= 5:\n        heavy.append(weight)\nprint(total_fee)\nprint(heavy)",
+    "checks": [
+      {
+        "label": "Исходный список сохранён",
+        "expression": "weights == [2,7,1,6]"
+      },
+      {
+        "label": "Правило стоимости переиспользуется",
+        "expression": "postage(3) == 7 and postage(8) == 17"
+      },
+      {
+        "label": "Выручка равна 36",
+        "expression": "type(total_fee) is int and total_fee == 36"
+      },
+      {
+        "label": "Тележка получила тяжёлые посылки",
+        "expression": "heavy == [7,6]"
+      },
+      {
+        "label": "Другой поток тоже рассчитан",
+        "expression": "__rerun__({'weights':[5,1,9]}).get('total_fee') == 33 and __rerun__({'weights':[5,1,9]}).get('heavy') == [5,9]"
+      },
+      {
+        "label": "Отчёт выведен двумя строками",
+        "expression": "__output__.strip() == '36\\n[7, 6]'"
+      }
+    ],
+    "example": "weights = [1, 3]\ndef postage(weight):\n    return weight * 2 + 1\n\ntotal_fee = sum(postage(w) for w in weights)\nprint(total_fee)",
+    "exampleOutput": "10",
+    "hints": [
+      "Начни с функции из предыдущего задания. Создай total_fee = 0 и heavy = [].",
+      "В цикле прибавляй postage(weight) к total_fee. Внутри if добавляй вес в heavy.",
+      "Допустим и sum(postage(w) for w in weights), и накопление в цикле. В конце нужны print(total_fee) и print(heavy)."
+    ],
+    "expected": "36\n[7, 6]",
+    "chapter": 3,
+    "xp": 120,
+    "minutes": 12,
+    "html": "",
+    "css": "",
+    "solutionHtml": "",
+    "solutionCss": "",
+    "webChecks": []
+  },
+  {
+    "id": "practice-v1-web-01",
+    "track": "web",
+    "title": "Дай странице смысл",
+    "skill": "HTML · заголовок и абзац",
+    "kind": "code",
+    "brief": "Жителям нужна страница почты. Начни с понятной структуры, которую прочитают и человек, и браузер.",
+    "theory": [
+      "HTML описывает смысл содержимого. h1 обозначает главный заголовок, p отделяет абзац.",
+      "Открывающий и закрывающий теги окружают текст. В этом упражнении редактируется содержимое body."
+    ],
+    "task": "Внутри main создай ровно один h1 с текстом «Почта острова» и абзац p с текстом «Доставляем добрые новости.».",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Заключи название в <h1>…</h1>.",
+      "Для второго предложения используй <p>…</p>.",
+      "Оба элемента должны оставаться внутри <main class=\"postcard\">."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  Почта острова\n  Доставляем добрые новости.\n</main>",
+    "css": "",
+    "solutionHtml": "<main class=\"postcard\">\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n</main>",
+    "solutionCss": "",
+    "webChecks": [
+      "heading",
+      "description"
+    ]
+  },
+  {
+    "id": "practice-v1-web-02",
+    "track": "web",
+    "title": "Собери список адресов",
+    "skill": "HTML · списки",
+    "kind": "code",
+    "brief": "Курьер должен видеть все три остановки. Преврати строки адресов в настоящий список.",
+    "theory": [
+      "ul объединяет элементы ненумерованного списка. Каждый пункт записывается в li.",
+      "Семантика важна: три абзаца выглядят похожими, но не сообщают браузеру, что это список."
+    ],
+    "task": "Внутри main добавь ul класса routes. В нём должны быть ровно три li: «Маяк», «Сад», «Причал» в таком порядке.",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Начни с <ul class=\"routes\">.",
+      "Каждый адрес помести в отдельный <li>.",
+      "Список: <ul class=\"routes\"><li>Маяк</li><li>Сад</li><li>Причал</li></ul>."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  <h1>Маршруты почты</h1>\n  Маяк Сад Причал\n</main>",
+    "css": "",
+    "solutionHtml": "<main class=\"postcard\">\n  <h1>Маршруты почты</h1>\n  <ul class=\"routes\">\n    <li>Маяк</li>\n    <li>Сад</li>\n    <li>Причал</li>\n  </ul>\n</main>",
+    "solutionCss": "",
+    "webChecks": [
+      "routes"
+    ]
+  },
+  {
+    "id": "practice-v1-web-03",
+    "track": "web",
+    "title": "Цвет и воздух",
+    "skill": "CSS · селектор и отступы",
+    "kind": "code",
+    "brief": "Сделай почтовую открытку читаемой: светлая бумага, тёмный текст, свободное место вокруг.",
+    "theory": [
+      "Селектор .postcard выбирает элемент по классу. В фигурных скобках идут свойства и значения.",
+      "background-color задаёт фон, color задаёт цвет текста, padding создаёт внутренние отступы."
+    ],
+    "task": "Для .postcard задай background-color: #f4e8c9, color: #23483f и padding: 24px со всех сторон.",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Все три свойства запиши внутри .postcard { … }.",
+      "Отступы задаются свойством padding, а не margin.",
+      "Эквивалентные записи цветов, например rgb(244, 232, 201), тоже принимаются."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "css": ".postcard {\n  /* Фон, текст и отступы */\n}",
+    "solutionHtml": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "solutionCss": ".postcard {\n  background-color: #f4e8c9;\n  color: #23483f;\n  padding: 24px;\n}",
+    "webChecks": [
+      "paper",
+      "ink",
+      "padding"
+    ]
+  },
+  {
+    "id": "practice-v1-web-04",
+    "track": "web",
+    "title": "Три окна выдачи",
+    "skill": "CSS · Flexbox",
+    "kind": "code",
+    "brief": "Окна выдачи сейчас стоят столбиком. Расположи их в один ряд по всей ширине.",
+    "theory": [
+      "display: flex включает гибкую раскладку для прямых детей контейнера.",
+      "justify-content: space-between распределяет свободное место между элементами. align-items выравнивает их поперёк главной оси."
+    ],
+    "task": "Для .mailboxes включи Flexbox. Три окна должны стоять в одном ряду: первое слева, последнее справа, промежутки одинаковые.",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Сначала display: flex.",
+      "Распределение свободного места: justify-content: space-between.",
+      "Добавь align-items: center, чтобы выровнять окна по вертикали."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "css": ".mailboxes {\n  /* Расположи окна */\n}",
+    "solutionHtml": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "solutionCss": ".mailboxes {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}",
+    "webChecks": [
+      "flex",
+      "spread"
+    ]
+  },
+  {
+    "id": "practice-v1-web-05",
+    "track": "web",
+    "title": "Стеллаж для открыток",
+    "skill": "CSS · Grid",
+    "kind": "code",
+    "brief": "Для трёх направлений нужны равные ячейки. Собери стеллаж, который подстраивается под ширину страницы.",
+    "theory": [
+      "CSS Grid задаёт сетку из строк и столбцов. fr обозначает долю свободного места.",
+      "repeat(3, 1fr) создаёт три одинаковых столбца. gap управляет расстоянием между ячейками."
+    ],
+    "task": "Сделай .mailboxes Grid-контейнером с тремя равными столбцами и gap: 12px.",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Начни с display: grid.",
+      "Столбцы: grid-template-columns: repeat(3, 1fr).",
+      "Добавь gap: 12px. Запись 1fr 1fr 1fr тоже подходит."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "css": ".mailboxes {\n  /* Создай три равных столбца */\n}",
+    "solutionHtml": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "solutionCss": ".mailboxes {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 12px;\n}",
+    "webChecks": [
+      "grid",
+      "equal-columns",
+      "gap"
+    ]
+  },
+  {
+    "id": "practice-v1-web-06",
+    "track": "web",
+    "title": "Открытка отвечает на наведение",
+    "skill": "CSS · микроанимация",
+    "kind": "code",
+    "brief": "Пусть карточка подсказывает, что она интерактивна: при наведении немного поднимается.",
+    "theory": [
+      "transform меняет видимое положение без перестройки соседних элементов.",
+      "transition делает переход состояния плавным. Ограничивай длительность, а при уменьшении движения эффект должен отключаться."
+    ],
+    "task": "Добавь .postcard переход transform длительностью 200ms. В .postcard:hover задай transform: translateY(-4px). Наведи указатель на результат; на телефоне нажми «Показать наведение».",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Переход задаётся на основном .postcard.",
+      "transition: transform 200ms ease-out;",
+      "Для состояния .postcard:hover используй transform: translateY(-4px)."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 60,
+    "minutes": 7,
+    "html": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "css": ".postcard {\n  /* Переход состояния */\n}\n.postcard:hover {\n  /* Подними открытку */\n}",
+    "solutionHtml": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "solutionCss": ".postcard {\n  transition: transform 200ms ease-out;\n}\n.postcard:hover {\n  transform: translateY(-4px);\n}",
+    "webChecks": [
+      "transition",
+      "lift"
+    ]
+  },
+  {
+    "id": "practice-v1-web-07",
+    "track": "web",
+    "title": "Сайт почтовой станции",
+    "skill": "Итоговый проект · HTML + CSS",
+    "kind": "project",
+    "brief": "Собери готовую страницу: понятный заголовок, описание, адреса и заметная кнопка. Её можно скачать и открыть отдельно.",
+    "theory": [
+      "HTML отвечает за смысл, CSS за оформление и расположение. Применяй их вместе, проверяя страницу по критериям.",
+      "Цель проекта: читаемая открытка с тремя равными окнами и настоящей кнопкой, доступной с клавиатуры."
+    ],
+    "task": "В main.postcard добавь h1 «Почта острова», p «Доставляем добрые новости.», .mailboxes с тремя span: Маяк, Сад, Причал и button типа button с текстом «Отправить открытку». Оформи открытку цветами #f4e8c9 и #23483f, padding 24px. Окна расположи в три равных Grid-столбца с gap 12px.",
+    "starter": "",
+    "solution": "",
+    "checks": [],
+    "example": "",
+    "exampleOutput": "",
+    "hints": [
+      "Начни со структуры HTML. Не заменяй кнопку элементом div.",
+      "Оформление .postcard возьми из урока «Цвет и воздух».",
+      "Для .mailboxes нужны display: grid, grid-template-columns: repeat(3, 1fr), gap: 12px."
+    ],
+    "expected": "",
+    "chapter": 0,
+    "xp": 120,
+    "minutes": 12,
+    "html": "<main class=\"postcard\">\n  <!-- Собери страницу почты -->\n</main>",
+    "css": ".postcard {\n}\n.mailboxes {\n}",
+    "solutionHtml": "<main class=\"postcard\">\n  <span class=\"stamp\">ТИХАЯ БУХТА</span>\n  <h1>Почта острова</h1>\n  <p>Доставляем добрые новости.</p>\n  <div class=\"mailboxes\"><span>Маяк</span><span>Сад</span><span>Причал</span></div>\n  <button type=\"button\">Отправить открытку</button>\n</main>",
+    "solutionCss": ".postcard {\n  background-color: #f4e8c9;\n  color: #23483f;\n  padding: 24px;\n}\n.mailboxes {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 12px;\n}",
+    "webChecks": [
+      "heading",
+      "description",
+      "windows",
+      "button",
+      "paper",
+      "ink",
+      "padding",
+      "grid",
+      "equal-columns",
+      "gap"
+    ]
+  }
+]

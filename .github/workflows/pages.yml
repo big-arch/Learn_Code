@@ -35,6 +35,7 @@ jobs:
       - run: npm run test:editor
       - run: npm run test:games
       - run: npm run test:mechanisms
+      - run: npm run test:practice
       - run: npm run test:python
       - run: npm run test:world
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d

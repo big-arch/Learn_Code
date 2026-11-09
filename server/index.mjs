@@ -24,6 +24,8 @@ const labLevels = JSON.parse(readFileSync(resolve(root, 'src/data/game-lab.json'
 missionIds.push(...labLevels.map(l => l.id))
 const mechanisms = JSON.parse(readFileSync(resolve(root, 'src/data/mechanism-missions.json'), 'utf8'))
 missionIds.push(...mechanisms.map(l => l.id))
+const practiceLessons = JSON.parse(readFileSync(resolve(root, 'src/data/practice-lessons.json'), 'utf8'))
+missionIds.push(...practiceLessons.map(l => l.id))
 const record = (v, limit) => v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length <= missionIds.length && Object.entries(v).every(([k,s]) => missionIds.includes(k) && typeof s === 'string' && s.length <= limit)
 export function validState(s) {
   return Boolean(s && typeof s === 'object' && s.version === 1 &&
