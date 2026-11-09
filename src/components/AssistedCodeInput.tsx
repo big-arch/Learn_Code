@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import type { KeyboardEvent, UIEvent } from 'react'
 import type { LanguageId } from '../types'
 import { editKey, expandCompletion, getCompletions } from '../lib/codeAssist'
@@ -14,19 +14,41 @@ interface Props {
   mode?: AssistMode
   label?: string
   readOnly?: boolean
+  autoGrow?: boolean
   maxLength?: number
   placeholder?: string
   onScroll?: (event: UIEvent<HTMLTextAreaElement>) => void
 }
 interface Menu { value: string; from: number; to: number; items: Completion[]; top: number; listHeight: number }
 
-export function AssistedCodeInput({id,value,onChange,onRun,language,mode='general',label='Код решения',readOnly=false,maxLength=20000,placeholder,onScroll}: Props) {
+function fitContent(el: HTMLTextAreaElement) {
+  el.style.height='auto'
+  const style=getComputedStyle(el)
+  const border=parseFloat(style.borderTopWidth)+parseFloat(style.borderBottomWidth)
+  el.style.height=`${Math.ceil(el.scrollHeight+border)}px`
+  el.scrollTop=0
+}
+
+export function AssistedCodeInput({id,value,onChange,onRun,language,mode='general',label='Код решения',readOnly=false,autoGrow=false,maxLength=20000,placeholder,onScroll}: Props) {
   const uid=useId(), input=useRef<HTMLTextAreaElement>(null)
   const [automatic,setAutomatic]=useState(true),[menu,setMenu]=useState<Menu|null>(null),[active,setActive]=useState(0)
   const [notice,setNotice]=useState('')
   const current=useRef<CodeEdit>({value,start:0,end:0}),undo=useRef<CodeEdit[]>([]),redo=useRef<CodeEdit[]>([])
   const allowTabExit=useRef(false),composing=useRef(false),frame=useRef(0)
   const shown=menu?.value===value&&!readOnly?menu:null
+
+  useLayoutEffect(()=>{if(autoGrow&&input.current)fitContent(input.current)},[autoGrow,value,readOnly])
+  useEffect(()=>{
+    const el=input.current
+    if(!autoGrow||!el)return
+    let width=el.clientWidth,live=true
+    const observer=new ResizeObserver(()=>{
+      if(el.clientWidth!==width){width=el.clientWidth;fitContent(el)}
+    })
+    observer.observe(el)
+    void document.fonts.ready.then(()=>{if(live)fitContent(el)})
+    return()=>{live=false;observer.disconnect()}
+  },[autoGrow])
 
   useEffect(()=>{
     // Remote sync, lesson navigation and reset start a new editing history.
@@ -96,7 +118,7 @@ export function AssistedCodeInput({id,value,onChange,onRun,language,mode='genera
     const edit=editKey(value,el.selectionStart,el.selectionEnd,event.key,language,event.shiftKey)
     if(edit){event.preventDefault();commit(edit)}else if(event.key.startsWith('Arrow')||event.key==='Home'||event.key==='End'){setMenu(null)}
   }
-  return <div className="code-assist" onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setMenu(null)}}>
+  return <div className={`code-assist${autoGrow?' code-assist-grow':''}`} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setMenu(null)}}>
     <textarea ref={input} id={id||uid} aria-label={label} aria-describedby={`${uid}-help`} aria-autocomplete={readOnly?'none':'list'} aria-controls={shown?`${uid}-list`:undefined} aria-activedescendant={shown?`${uid}-option-${active}`:undefined}
       value={value} readOnly={readOnly} maxLength={maxLength} placeholder={placeholder} spellCheck={false} autoCapitalize="off" autoCorrect="off" autoComplete="off"
       onKeyDown={keyDown} onScroll={e=>{setMenu(null);onScroll?.(e)}}
