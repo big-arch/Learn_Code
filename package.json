@@ -9,6 +9,8 @@
     "predev": "npm run prepare:python",
     "dev": "vite --configLoader runner",
     "build": "tsc -b && vite build --configLoader runner",
+    "prebuild:pages": "npm run prepare:python",
+    "build:pages": "tsc -b && vite build --mode pages --outDir dist-pages --configLoader runner",
     "lint": "oxlint",
     "preview": "vite preview",
     "start": "node server/index.mjs",

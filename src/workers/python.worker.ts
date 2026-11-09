@@ -2,7 +2,7 @@
 import type { PythonCheck } from '../data/pythonCourse'
 interface Runtime { globals: { set: (name: string, value: string) => void }; runPython: (code: string) => string }
 const scope = self as unknown as DedicatedWorkerGlobalScope
-const INDEX = new URL('/python/314.0.7/', self.location.origin).href
+const INDEX = new URL(import.meta.env.BASE_URL + 'python/314.0.7/', self.location.origin).href
 let runtime: Runtime | null = null
 import runner from './python-harness.py?raw'
 scope.onmessage = async (event: MessageEvent<{ code: string; checks: PythonCheck[]; stdin: string }>) => {

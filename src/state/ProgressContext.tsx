@@ -7,6 +7,8 @@ import type { ProgressState } from '../types'
 import { ProgressContext } from './useProgress'
 import type { ProgressContextValue } from './useProgress'
 
+const browserOnly = import.meta.env.MODE === 'pages'
+
 const localDate = (date = new Date()) => {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -22,10 +24,11 @@ const previousDate = () => {
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<ProgressState>(loadProgress)
-  const [ready, setReady] = useState(false)
-  const [storageStatus, setStorageStatus] = useState('Подключаем сохранение…')
+  const [ready, setReady] = useState(browserOnly)
+  const [storageStatus, setStorageStatus] = useState(browserOnly ? 'Сохранение в этом браузере' : 'Подключаем сохранение…')
 
   useEffect(() => {
+    if (browserOnly) return
     let active = true
     fetchProgress().then(remote => {
       if (!active) return
@@ -40,6 +43,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready) return
     const localSaved = persistProgress(progress)
+    if (browserOnly) {
+      let active = true
+      queueMicrotask(() => { if (active) setStorageStatus(localSaved ? 'Сохранено в этом браузере' : 'Не удалось сохранить · разреши хранение данных') })
+      return () => { active = false }
+    }
     const timer = window.setTimeout(() => {
       setStorageStatus('Сохраняем…')
       void syncProgress(progress).then(() => setStorageStatus('Сохранено в SQL')).catch(() => setStorageStatus(localSaved ? 'Сохранено в браузере · SQL недоступна' : 'Не удалось сохранить · разреши хранение данных'))

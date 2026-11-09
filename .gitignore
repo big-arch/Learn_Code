@@ -33,3 +33,5 @@ qa/*.png
 qa/results*.json
 .superpowers/
 .tools/
+
+dist-pages/
