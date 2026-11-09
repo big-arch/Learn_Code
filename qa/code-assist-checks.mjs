@@ -36,6 +36,7 @@ export default async function codeAssistChecks(page, origin='http://127.0.0.1:51
   await page.getByRole('button',{name:/^Подсказки/}).click();await page.getByRole('option',{name:/print/}).click();await settle();check(await value()==='print()','manual button and pointer insertion work with auto off')
   await page.reload();await page.locator('.side-nav').getByRole('button',{name:'Курс Python',exact:true}).click();await page.getByRole('tab',{name:'03 Написать код'}).click();editor=page.getByRole('textbox',{name:'Код решения',exact:true});check(await value()==='print()','completed draft persists after reload')
   await page.locator('.side-nav').getByRole('button',{name:'Мастерская',exact:true}).click()
+  await page.getByRole('button',{name:'Другие мастерские',exact:true}).click()
   editor=page.getByRole('textbox',{name:'Код мастерской',exact:true})
   await editor.fill('jus');await editor.press('Tab');await settle();check(await value()==='justify-content: center;','CSS property template inserted')
   await editor.fill('justify-content: flex-e');await editor.press('Tab');await settle();check(await value()==='justify-content: flex-end','CSS value completion is property-aware')

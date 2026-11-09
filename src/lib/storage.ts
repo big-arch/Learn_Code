@@ -4,7 +4,8 @@ import { pythonProgressItems } from '../data/pythonCourse'
 import { islandProgressItems } from '../data/adventure'
 import videoData from '../data/python-video.json'
 import labLevels from '../data/game-lab.json'
-const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels]
+import mechanismMissions from '../data/mechanism-missions.json'
+const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels, ...mechanismMissions]
 
 export const STORAGE_KEY = 'code-arena-progress-v1'
 

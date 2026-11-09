@@ -3,11 +3,13 @@ import { Award, BarChart3, Check, Code2, Flame, Gamepad2, Pause, Play, RotateCcw
 import { allMissions, getLessons, completedWorlds, nextCourseFor } from '../data/lessons'
 import { islandQuests } from '../data/adventure'
 import { pythonLessons } from '../data/pythonCourse'
-import labLevels from '../data/game-lab.json'
+import classicLabLevels from '../data/game-lab.json'
+import mechanisms from '../data/mechanism-missions.json'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
 import type { LanguageId } from '../types'
 
+const labLevels = [...classicLabLevels, ...mechanisms]
 const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
 
 export function ProgressView({ onStartMission, onGames }: { onStartMission: (id: LanguageId) => void; onGames: () => void }) {
@@ -55,7 +57,7 @@ export function ProgressView({ onStartMission, onGames }: { onStartMission: (id:
         </section>
       </div>
 
-      <section className="adventure-banner"><Sparkles size={30}/><div><h2>Игровая мастерская: {labLevels.filter(l => progress.completed.includes(l.id)).length} / {labLevels.length}</h2><p>Бухта, сад, теплица и маршруты Искры. Эти открытия учитываются отдельно от вводных миссий по направлениям ниже.</p></div><button type="button" className="button primary" onClick={onGames}>Вернуться в мастерскую</button></section>
+      <section className="adventure-banner"><Sparkles size={30}/><div><h2>Игровая мастерская: {labLevels.filter(l => progress.completed.includes(l.id)).length} / {labLevels.length}</h2><p>Механизмы Python, бухта, сад, теплица и маршруты Искры. Эти открытия учитываются отдельно от вводных миссий по направлениям ниже.</p></div><button type="button" className="button primary" onClick={onGames}>Вернуться в мастерскую</button></section>
 
       <section className="skills-panel panel">
         <div className="panel-heading"><div><span className="section-kicker">ПРОГРЕСС ОБУЧЕНИЯ</span><h2>Навыки по направлениям</h2></div><span className="soft-chip">По реальным действиям</span></div>

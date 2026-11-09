@@ -9,6 +9,7 @@ import { RobotWorld } from '../components/RobotWorld'
 import { useProgress } from '../state/useProgress'
 import './game-lab.css'
 import { AssistedCodeInput } from '../components/AssistedCodeInput'
+import { MechanismWorkshop } from './MechanismWorkshop'
 
 const plants = [
   { kind: 'mint', name: 'Мята', ready: 'yes', icon: '❧' },
@@ -20,6 +21,11 @@ const directions: { id: Direction; label: string }[] = [{ id: 'right', label: '�
 const languages: { id: LanguageId; label: string }[] = [{id:'python',label:'Python'}, {id:'javascript',label:'JavaScript'}, {id:'csharp',label:'C#'}, {id:'go',label:'Go'}]
 
 export function GameLab() {
+  const [section,setSection]=useState<'mechanisms'|'classic'>('mechanisms')
+  return <><nav className="workshop-switch" aria-label="Разделы мастерской"><button type="button" aria-pressed={section==='mechanisms'} onClick={()=>setSection('mechanisms')}>Python · Мастерская механизмов</button><button type="button" aria-pressed={section==='classic'} onClick={()=>setSection('classic')}>Другие мастерские</button></nav>{section==='mechanisms'?<MechanismWorkshop/>:<ClassicGameLab/>}</>
+}
+
+function ClassicGameLab() {
   const { progress } = useProgress()
   const [mode, setMode] = useState<GameMode>('flex')
   const [index, setIndex] = useState(0)

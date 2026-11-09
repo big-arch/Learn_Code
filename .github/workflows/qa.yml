@@ -23,3 +23,4 @@ jobs:
       - run: npm run test:cloud
       - run: npm run test:editor
       - run: npm run test:games
+      - run: npm run test:mechanisms
