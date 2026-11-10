@@ -25,7 +25,7 @@ interface AppShellProps {
 }
 
 export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShellProps) {
-  const {user,configured,setOpen}=useAccount()
+  const {user,device,configured,setOpen}=useAccount()
   const { progress, setSound } = useProgress()
   const level = Math.floor(progress.xp / 500) + 1
   const levelXp = progress.xp % 500
@@ -86,7 +86,7 @@ export function AppShell({ view, onNavigate, onOpenPalette, children }: AppShell
             <button className="icon-button" type="button" onClick={() => setSound(!progress.sound)} aria-label={progress.sound ? 'Выключить звуки победы' : 'Включить звуки победы'} aria-pressed={progress.sound}>
               {progress.sound ? <Volume2 size={18} aria-hidden="true" /> : <VolumeX size={18} aria-hidden="true" />}
             </button>
-            {configured&&<button type="button" className="account-trigger" onClick={()=>setOpen(true)} aria-label={user?'Открыть аккаунт':'Войти по почте'}>{user?'Аккаунт':'Войти'}</button>}
+            {configured&&<button type="button" className="account-trigger" onClick={()=>setOpen(true)} aria-label={user||device?'Открыть аккаунт':'Подключить синхронизацию'}>{user||device?'Аккаунт':'Войти'}</button>}
             <button className="avatar" type="button" onClick={() => onNavigate('progress')} aria-label="Открыть профиль и прогресс">YOU</button>
           </div>
         </header>

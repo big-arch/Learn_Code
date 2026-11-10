@@ -5,15 +5,22 @@ import { CloudProgressStore } from '../lib/cloudProgress'
 import { loadGuestForImport } from '../lib/storage'
 import { ProgressContext } from './useProgress'
 import type { ProgressContextValue } from './useProgress'
+import { deviceSync } from '../lib/deviceSync'
+import { readDeviceSession } from '../lib/deviceCode'
+import type { DeviceSession } from '../lib/deviceCode'
 const dayKey=(date=new Date())=>[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-')
-export function CloudProgressProvider({userId,children}:{userId:string;children:ReactNode}) {
+export function CloudProgressProvider({userId,device,children}:{userId:string;device?:DeviceSession;children:ReactNode}) {
   const store=useMemo(()=>new CloudProgressStore(userId,async(revision,state,reset)=>{
+    if(device){
+      if(readDeviceSession()?.id!==device.id)throw Error('Account changed')
+      return deviceSync(device.code,revision,state,reset)
+    }
     const {data:{session}}=await supabase!.auth.getSession()
     if(session?.user.id!==userId)throw Error('Account changed')
     const {data,error}=await supabase!.rpc('learn_code_sync',{p_revision:revision??null,p_state:state??null,p_reset:reset??false}).abortSignal(AbortSignal.timeout(12000))
     if(error)throw error
     return data
-  }),[userId])
+  },localStorage,device?.initial),[userId,device])
   const snapshot=useSyncExternalStore(store.subscribe,store.getSnapshot)
   useEffect(()=>{
     store.start()

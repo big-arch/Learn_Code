@@ -49,5 +49,12 @@ test('account caches do not leak into another account',async()=>{
 test('edits made while a save is in flight remain pending, then upload',async()=>{
  const b=backend();let release,entered;const writing=new Promise(r=>entered=r)
  const a=new CloudProgressStore('a',async(rev,state,reset)=>{if(state&&state.drafts.code==='v1'){entered();await new Promise(r=>release=r)}return b.call(rev,state,reset)},memory())
- try{await a.sync();a.change(s=>({...s,drafts:{code:'v1'}}));const saving=a.sync();await writing;a.change(s=>({...s,drafts:{code:'v2'}}));release();await saving;assert.equal(a.getSnapshot().progress.drafts.code,'v2');await a.sync();assert.equal(b.row.state.drafts.code,'v2')}finally{a.dispose()}
+ try{await a.sync();a.change(s=>({...s,drafts:{code:'v1'}}));const saving=a.sync();await writing;a.change(s=>({...s,drafts:{code:'v2'}}));release();await saving;assert.equal(a.getSnapshot().progress.drafts.code,'v2');assert.notEqual(a.getSnapshot().status,'Сохранено в облаке');await a.sync();assert.equal(b.row.state.drafts.code,'v2')}finally{a.dispose()}
+})
+
+test('creation retry preserves guest edits made after a lost response',async()=>{
+ const b=backend();await b.call(0,{...empty(),drafts:{code:'sent before network loss'}})
+ const current={...complete(empty(),'lab-v1-flex-01'),drafts:{code:'edited during retry'}}
+ const a=new CloudProgressStore('device:new',b.call,memory(),current)
+ try{await a.sync();assert.equal(a.getSnapshot().progress.completed.length,1);assert.deepEqual(a.getSnapshot().conflicts.code,{local:'edited during retry',remote:'sent before network loss'})}finally{a.dispose()}
 })

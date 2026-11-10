@@ -19,7 +19,7 @@ export class CloudProgressStore {
   private transport: CloudTransport
   private storage: Pick<Storage,'getItem'|'setItem'>
   private snapshot: Snapshot
-  constructor(userId:string, transport:CloudTransport, storage:Pick<Storage,'getItem'|'setItem'> = localStorage) {
+  constructor(userId:string, transport:CloudTransport, storage:Pick<Storage,'getItem'|'setItem'> = localStorage, initial:ProgressState = initialProgress) {
     this.transport=transport;this.storage=storage
     this.key = 'code-arena:cloud:' + userId
     let cache:Cache|null=null
@@ -27,7 +27,7 @@ export class CloudProgressStore {
     if(cache?.row && Number.isSafeInteger(cache.row.revision) && Number.isSafeInteger(cache.row.epoch)) {
       this.row={...cache.row,state:normalizeProgress(cache.row.state)}; this.initialized=true
     }
-    this.snapshot={progress:cache?normalizeProgress(cache.progress):initialProgress,status:'Подключаем облако…',conflicts:cache?.conflicts||{},ready:false,backup:cache?.backup||null}
+    this.snapshot={progress:cache?normalizeProgress(cache.progress):normalizeProgress(initial),status:'Подключаем облако…',conflicts:cache?.conflicts||{},ready:false,backup:cache?.backup||null}
   }
   getSnapshot=()=>this.snapshot
   subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>this.listeners.delete(listener)}
@@ -99,7 +99,8 @@ export class CloudProgressStore {
         const during=mergeProgress(before,this.snapshot.progress,this.row.state)
         const combined={...conflicts,...during.conflicts}
         for(const [id,c] of Object.entries(combined)) during.state.drafts[id]=c.local
-        this.update({progress:normalizeProgress(during.state),conflicts:combined,ready:true,status:Object.keys(combined).length?'Выбери версию изменённых черновиков в аккаунте':'Сохранено в облаке'})
+        const progress=normalizeProgress(during.state)
+        this.update({progress,conflicts:combined,ready:true,status:Object.keys(combined).length?'Выбери версию изменённых черновиков в аккаунте':sameProgress(progress,this.row.state)?'Сохранено в облаке':'Есть изменения · сохраняем…'})
         return
       }
       this.update({ready:true,status:'На другом устройстве идут изменения. Повторим синхронизацию.'})

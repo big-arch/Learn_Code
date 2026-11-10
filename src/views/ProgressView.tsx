@@ -8,6 +8,7 @@ import mechanisms from '../data/mechanism-missions.json'
 import practiceLessons from '../data/practice-lessons.json'
 import { courses } from '../data/courses'
 import { useProgress } from '../state/useProgress'
+import { useAccount } from '../state/useAccount'
 import type { LanguageId } from '../types'
 
 const labLevels = [...classicLabLevels, ...mechanisms]
@@ -15,6 +16,7 @@ const weekDays = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
 
 export function ProgressView({ onStartMission, onGames, onPractice }: { onStartMission: (id: LanguageId) => void; onGames: () => void; onPractice: () => void }) {
   const { progress, cloud, storageStatus, setSound, setMotion, resetProgress } = useProgress()
+  const {configured,setOpen}=useAccount()
   const resetRef = useRef<HTMLDialogElement>(null)
   const level = Math.floor(progress.xp / 500) + 1
   const levelXp = progress.xp % 500
@@ -36,6 +38,7 @@ export function ProgressView({ onStartMission, onGames, onPractice }: { onStartM
     <div className="progress-view view-enter">
       <div className="view-heading"><div><span className="section-kicker">ЛИЧНАЯ ТЕЛЕМЕТРИЯ</span><h1>Прогресс, который видно<span>.</span></h1><p>Здесь нет сравнения с другими. Только твой код, твои решения и твой собственный темп.</p></div><button className="button secondary" type="button" onClick={() => onStartMission(nextCourseFor(progress.completed).id)}><Play size={16} />Новая миссия</button></div>
 
+      {configured&&<section className="progress-sync"><div><h2>{cloud?'Прогресс связан с облаком':'Продолжай на другом устройстве'}</h2><p>{cloud?storageStatus:'Подключи личный код или почту, чтобы перенести уроки, игры и черновики.'}</p></div><button type="button" className="button secondary" onClick={()=>setOpen(true)}>{cloud?'Управлять синхронизацией':'Подключить устройства'}</button></section>}
       <section className="progress-hero panel">
         <div className="level-emblem"><span>УРОВЕНЬ</span><strong>{String(level).padStart(2, '0')}</strong><div className="level-orbit"><i /><i /></div></div>
         <div className="level-details"><span className="section-kicker">РАЗРАБОТЧИК · {level < 3 ? 'НАЧАЛО ПУТИ' : 'УВЕРЕННЫЙ СТАРТ'}</span><h2>{progress.xp} <span>XP</span></h2><p>{levelXp} из 500 XP до уровня {String(level + 1).padStart(2, '0')}</p><div className="level-progress"><i style={{ width: `${levelXp / 5}%` }} /></div></div>

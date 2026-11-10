@@ -98,9 +98,9 @@ function GuestProgressProvider({ children }: { children: ReactNode }) {
 }
 
 function ProgressRouter({children}:{children:ReactNode}) {
-  const {ready,user}=useAccount()
+  const {ready,user,device}=useAccount()
   if(!ready)return <div className="loading-screen" role="status">Проверяем вход…</div>
-  return user?<CloudProgressProvider key={user.id} userId={user.id}>{children}</CloudProgressProvider>:<GuestProgressProvider key="guest">{children}</GuestProgressProvider>
+  return user?<CloudProgressProvider key={user.id} userId={user.id}>{children}</CloudProgressProvider>:device?<CloudProgressProvider key={'device:'+device.id} userId={'device:'+device.id} device={device}>{children}</CloudProgressProvider>:<GuestProgressProvider key="guest">{children}</GuestProgressProvider>
 }
 export function ProgressProvider({children}:{children:ReactNode}) {
   return <AccountProvider><ProgressRouter>{children}</ProgressRouter></AccountProvider>
