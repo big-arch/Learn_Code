@@ -27,7 +27,7 @@ export async function greenhouseChecks(page,base='http://127.0.0.1:5191/Learn_Co
   }
   let s=await saved();check(s.completed.length===8&&s.xp===460,'all eight lessons save exactly 460 XP')
   check(Object.values(s.learning).filter(e=>e.kind==='attempt'&&e.passed).length===8,'successful attempts retained')
-  await p.getByRole('button',{name:'К моему пути',exact:true}).click();check((await p.locator('.learning-path').innerText()).includes('8/8'),'home route reflects completion')
+  await p.getByRole('button',{name:'К моему пути',exact:true}).click();check((await p.locator('.study-path').innerText()).includes('8/8'),'home route reflects completion')
   await p.getByRole('button',{name:'Прогресс',exact:true}).click();check((await p.locator('.green-skills').innerText()).includes('Решил с подсказкой'),'skills screen distinguishes supported learning')
   await p.locator('.green-skill-row').nth(1).getByRole('button',{name:'Повторить',exact:true}).click()
   await p.getByRole('textbox',{name:'Python-код теплицы',exact:true}).fill('water = moisture < 35');await run(false)
