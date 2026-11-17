@@ -53,4 +53,4 @@ Three.js показывает реальные значения `water`, `fan` �
 
 Браузерные сценарии: `qa/greenhouse-browser.mjs`, `qa/greenhouse-sync-browser.mjs`. Они создают и закрывают собственные контексты. SQL-проверка: `qa/learning-database.sql`, всегда с `ROLLBACK`.
 
-Публикация и проверка публичной версии будут зафиксированы после завершения GitHub Actions.
+Фактическая публикация и проверка публичной версии фиксируются отдельно в `.cache/GREENHOUSE-PUBLICATION-QA.md` после завершения GitHub Actions.

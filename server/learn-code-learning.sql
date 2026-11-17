@@ -130,4 +130,3 @@ begin
   return jsonb_build_object('id',saved.id,'state',saved.state,'revision',saved.revision,'epoch',saved.epoch,'accepted',true);
 end $function$
 ;
-
