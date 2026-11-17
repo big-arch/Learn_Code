@@ -10,7 +10,7 @@ import { CodeEditor } from '../components/CodeEditor'
 import { BookReading } from '../components/BookReading'
 import { VideoCourseSources, VideoLesson } from '../components/VideoLesson'
 
-export function PythonView({ startChapter = null, onAdventure, onPractice }: { startChapter?: number | null; onAdventure?: () => void; onPractice?: () => void }) {
+export function PythonView({ startChapter = null, onAdventure, onPractice, onGreenhouse }: { startChapter?: number | null; onAdventure?: () => void; onPractice?: () => void;onGreenhouse?:()=>void }) {
   const { progress }=useProgress()
   const [index,setIndex]=useState(()=>startChapter!==null?startChapter*4:Math.max(0,pythonLessons.findIndex(l=>!progress.completed.includes(l.id))))
   const completed=pythonLessons.filter(l=>progress.completed.includes(l.id)).length
@@ -22,6 +22,7 @@ export function PythonView({ startChapter = null, onAdventure, onPractice }: { s
     {onAdventure&&<button type="button" className="course-adventure-link" onClick={onAdventure}>Закрепить первые 4 темы в игре «Остров Тихой бухты» <ArrowRight size={17}/></button>}
     {onPractice&&<button type="button" className="course-adventure-link" onClick={onPractice}>Практикум почты: условия, циклы, функции и свой проект <ArrowRight size={17}/></button>}
     <VideoCourseSources onSelect={select}/>
+    {onGreenhouse&&<button type="button" className="course-adventure-link" onClick={onGreenhouse}>Углублённая глава: условия и отладка в «Умной теплице» <ArrowRight size={17}/></button>}
     <div className="python-layout">
       <details className="syllabus" open><summary><BookOpen size={18}/> Программа курса</summary>
         {pythonChapters.map((chapter,c)=><section key={chapter.title}><h2><span>0{c+1}</span>{chapter.title}</h2>{pythonLessons.map((l,i)=>l.chapter===c&&<button type="button" key={l.id} className={i===index?'active':''} aria-current={i===index?'step':undefined} onClick={()=>select(i)}><span>{progress.completed.includes(l.id)?<Check size={14}/>:String(i+1).padStart(2,'0')}</span><span>{l.title.split(': ').at(-1)}</span></button>)}</section>)}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { AccountDialog } from './components/AccountDialog'
 import { AppShell } from './components/AppShell'
@@ -17,8 +17,10 @@ import { ProgressView } from './views/ProgressView'
 import { PracticeView } from './views/PracticeView'
 import type { PracticeTrack } from './lib/practice'
 import type { Course, LanguageId, ViewId } from './types'
+const GreenhouseView=lazy(()=>import('./views/GreenhouseView').then(module=>({default:module.GreenhouseView})))
 
 const titles: Record<ViewId, string> = {
+  greenhouse:'Умная теплица: условия Python — КОД:АРЕНА',
   practice: 'Практикум: Python, HTML и CSS — КОД:АРЕНА',
   games: 'Игровая мастерская — КОД:АРЕНА',
   adventure: 'Остров Тихой бухты — КОД:АРЕНА',
@@ -38,6 +40,7 @@ function AppContent() {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [pythonStart, setPythonStart] = useState<number | null>(null)
   const [practiceTrack, setPracticeTrack] = useState<PracticeTrack>('python')
+  const [greenStart,setGreenStart]=useState({index:0,review:false})
   const [toast, setToast] = useState('')
   const toastTimer = useRef<number | null>(null)
 
@@ -81,15 +84,16 @@ function AppContent() {
 
   return (
     <AppShell view={view} onNavigate={navigate} onOpenPalette={() => setPaletteOpen(true)}>
-      {view === 'home' && <StudioHome onNavigate={navigate} onPython={(chapter) => { setPythonStart(chapter ?? null); navigate('python') }} />}
+      {view === 'home' && <StudioHome onGreenhouse={(index=0,review=false)=>{setGreenStart({index,review});navigate('greenhouse')}} onNavigate={navigate} onPython={(chapter) => { setPythonStart(chapter ?? null); navigate('python') }} />}
       {view === 'adventure' && <AdventureView onCourse={() => { setPythonStart(null); navigate('python') }} />}
-      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onAdventure={()=>navigate('adventure')} onPractice={() => { setPracticeTrack('python'); navigate('practice') }} />}
+      {view === 'python' && <PythonView key={String(pythonStart)} startChapter={pythonStart} onGreenhouse={()=>{setGreenStart({index:0,review:false});navigate('greenhouse')}} onAdventure={()=>navigate('adventure')} onPractice={() => { setPracticeTrack('python'); navigate('practice') }} />}
+      {view === 'greenhouse' && <Suspense fallback={<div className="loading-screen" role="status">Открываем теплицу…</div>}><GreenhouseView start={greenStart.index} review={greenStart.review} onHome={()=>navigate('home')} onPython={()=>{setPythonStart(1);navigate('python')}}/></Suspense>}
       {view === 'practice' && <PracticeView key={practiceTrack} startTrack={practiceTrack} onPython={chapter => { setPythonStart(chapter); navigate('python') }} />}
       {view === 'courses' && <CoursesView onOpenCourse={setDetailCourse} onStartMission={startMission} onPractice={track => { setPracticeTrack(track); navigate('practice') }} />}
       {view === 'map' && <MapView onStartMission={startMission} />}
       {view === 'games' && <GameLab />}
       {view === 'arena' && <Arena key={activeCourseId} courseId={activeCourseId} onCourseChange={setActiveCourseId} onNotify={notify} />}
-      {view === 'progress' && <ProgressView onStartMission={startMission} onGames={() => navigate('games')} onPractice={() => navigate('practice')} />}
+      {view === 'progress' && <ProgressView onGreenhouse={(index,review)=>{setGreenStart({index,review});navigate('greenhouse')}} onStartMission={startMission} onGames={() => navigate('games')} onPractice={() => navigate('practice')} />}
       {view === 'research' && <HandbookView onPython={() => { setPythonStart(null); navigate('python') }} />}
       <AccountDialog />
       <CourseDialog course={detailCourse} onClose={() => setDetailCourse(null)} onStart={() => detailCourse && startMission(detailCourse.id)} />

@@ -1,4 +1,5 @@
 import type { ProgressState } from '../types'
+import { mergeEvidence, normalizeEvidence } from '../../shared/learning.mjs'
 
 export interface DraftConflict { local: string; remote: string }
 export function mergeProgress(base: ProgressState, local: ProgressState, remote: ProgressState) {
@@ -27,7 +28,7 @@ export function mergeProgress(base: ProgressState, local: ProgressState, remote:
     if(a.getTime()!==b.getTime()) break
     streak++
   }
-  return {state: {...remote, completed, completedAt, drafts, streak, lastCompletionDate:dates.at(-1) ?? null,
+  return {state: {...remote, completed, completedAt, drafts, learning:mergeEvidence(remote.learning,local.learning), streak, lastCompletionDate:dates.at(-1) ?? null,
     sound:local.sound!==base.sound?local.sound:remote.sound,
     motion:local.motion!==base.motion?local.motion:remote.motion}, conflicts}
 }
@@ -36,6 +37,7 @@ export function sameProgress(a: ProgressState, b: ProgressState) {
   const canonical = (p: ProgressState) => JSON.stringify({
     completed:[...p.completed].sort(), completedAt:Object.entries(p.completedAt).sort(),
     drafts:Object.entries(p.drafts).sort(), sound:p.sound, motion:p.motion,
+    learning:Object.entries(normalizeEvidence(p.learning)).sort(),
   })
   return canonical(a) === canonical(b)
 }

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import {build} from 'vite'
 import {resolve} from 'node:path'
 import {setTimeout as delay} from 'node:timers/promises'
+import {randomUUID} from 'node:crypto'
 const result=await build({configFile:false,logLevel:'silent',build:{lib:{entry:resolve('src/lib/cloudProgress.ts'),formats:['es']},write:false,minify:false}})
 const {CloudProgressStore}=await import('data:text/javascript;base64,'+Buffer.from((Array.isArray(result)?result[0]:result).output.find(o=>o.type==='chunk').code).toString('base64'))
 const empty=()=>({version:1,xp:0,completed:[],completedAt:{},drafts:{},activity:[0,0,0,0,0,0,0],streak:0,lastCompletionDate:null,sound:true,motion:true})
@@ -16,6 +17,19 @@ const backend=()=>{
  }}
 }
 const complete=(s,id)=>({...s,completed:[...s.completed,id],completedAt:{...s.completedAt,[id]:new Date().toISOString()}})
+
+test('learning evidence, reviews and drafts merge across devices; reset clears evidence',async()=>{
+ const b=backend(),a=new CloudProgressStore('green',b.call,memory()),c=new CloudProgressStore('green',b.call,memory()),left=randomUUID(),right=randomUUID()
+ const event={lesson:'greenhouse-v1-01',version:1,kind:'attempt',variant:'lesson',passed:true,helped:false,at:new Date().toISOString()}
+ try{
+  await a.sync();await c.sync()
+  a.change(s=>({...complete(s,event.lesson),learning:{[left]:event},drafts:{'greenhouse-v1-01':'water = moisture < 35'}}))
+  c.change(s=>({...complete(s,event.lesson),learning:{[right]:{...event,variant:'review'}},drafts:{'greenhouse-v1-01-review':'water = moisture < 45'}}))
+  await a.sync();await c.sync();await a.sync()
+  for(const store of [a,c]){const s=store.getSnapshot().progress;assert.equal(s.xp,40);assert.equal(Object.keys(s.learning).length,2);assert.equal(Object.keys(s.drafts).length,2)}
+  await a.reset();await c.sync();assert.deepEqual(c.getSnapshot().progress.learning,{})
+ }finally{a.dispose();c.dispose()}
+})
 test('two devices merge achievements and independent drafts without duplicate XP',async()=>{
  const b=backend(),a=new CloudProgressStore('a',b.call,memory()),c=new CloudProgressStore('a',b.call,memory())
  try{await a.sync();await c.sync();a.change(s=>({...complete(s,'lab-v1-flex-01'),drafts:{a:'left'}}));c.change(s=>({...complete(s,'lab-v1-flex-02'),drafts:{b:'right'}}));await a.sync();await c.sync();await a.sync();assert.deepEqual(a.getSnapshot().progress.completed.sort(),['lab-v1-flex-01','lab-v1-flex-02']);assert.equal(a.getSnapshot().progress.xp,130);assert.deepEqual(a.getSnapshot().progress.drafts,{a:'left',b:'right'});await a.sync();assert.equal(a.getSnapshot().progress.xp,130)}finally{a.dispose();c.dispose()}

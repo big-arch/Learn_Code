@@ -14,6 +14,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "start": "node server/index.mjs",
+    "check:content": "node scripts/check-learning-content.mjs",
+    "test:learning": "node --test qa/greenhouse.test.mjs qa/learning.test.mjs",
     "test:cloud": "node --test qa/cloud-progress.test.mjs qa/device-sync.test.mjs",
     "test:editor": "node --experimental-strip-types --test qa/code-assist.test.mjs",
     "test:games": "node --experimental-strip-types --test qa/game-lab.test.mjs",

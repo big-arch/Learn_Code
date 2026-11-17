@@ -6,7 +6,9 @@ import videoData from '../data/python-video.json'
 import labLevels from '../data/game-lab.json'
 import mechanismMissions from '../data/mechanism-missions.json'
 import practiceLessons from '../data/practice-lessons.json'
-const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels, ...mechanismMissions, ...practiceLessons]
+import greenhouse from '../data/greenhouse.json'
+import { normalizeEvidence } from '../../shared/learning.mjs'
+const progressItems = [...allMissions, ...pythonProgressItems, ...islandProgressItems, ...labLevels, ...mechanismMissions, ...practiceLessons, ...greenhouse]
 
 export const STORAGE_KEY = 'code-arena-progress-v1'
 
@@ -64,6 +66,7 @@ export function normalizeProgress(input: unknown): ProgressState {
       lastCompletionDate: typeof value.lastCompletionDate === 'string' ? value.lastCompletionDate : null,
       sound: typeof value.sound === 'boolean' ? value.sound : true,
       motion: typeof value.motion === 'boolean' ? value.motion : true,
+      learning: normalizeEvidence(value.learning),
     }
   } catch {
     return initialProgress

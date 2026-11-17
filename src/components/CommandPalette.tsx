@@ -11,6 +11,7 @@ interface CommandPaletteProps {
 }
 
 const views: { id: ViewId; label: string }[] = [
+  { id: 'greenhouse', label: 'Умная теплица — условия Python, логика и повторение' },
   { id: 'practice', label: 'Практикум — проекты Python, HTML и CSS' },
   { id: 'adventure', label: 'Приключение — Остров Тихой бухты' },
   { id: 'home', label: 'Главная' },

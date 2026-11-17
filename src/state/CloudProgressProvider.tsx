@@ -8,6 +8,7 @@ import type { ProgressContextValue } from './useProgress'
 import { deviceSync } from '../lib/deviceSync'
 import { readDeviceSession } from '../lib/deviceCode'
 import type { DeviceSession } from '../lib/deviceCode'
+import { normalizeEvidence } from '../../shared/learning.mjs'
 const dayKey=(date=new Date())=>[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-')
 export function CloudProgressProvider({userId,device,children}:{userId:string;device?:DeviceSession;children:ReactNode}) {
   const store=useMemo(()=>new CloudProgressStore(userId,async(revision,state,reset)=>{
@@ -44,6 +45,7 @@ export function CloudProgressProvider({userId,device,children}:{userId:string;de
       });return true
     },
     saveDraft:(id,code)=>{if(snapshot.progress.drafts[id]!==code)store.change(p=>({...p,drafts:{...p.drafts,[id]:code}}))},
+    recordLearning:event=>{const id=crypto.randomUUID(),at=new Date().toISOString();store.change(p=>({...p,learning:normalizeEvidence({...p.learning,[id]:{...event,at}})}))},
     setSound:enabled=>store.change(p=>({...p,sound:enabled})),setMotion:enabled=>store.change(p=>({...p,motion:enabled})),
     resetProgress:()=>{void store.reset().catch(e=>store.report(e.message))},
   }

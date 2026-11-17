@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { ProgressState } from '../types'
+import type { ProgressState, LearningEvent } from '../types'
 
 export interface ProgressContextValue {
   cloud?: { conflicts:Record<string,{local:string;remote:string}>; backup:ProgressState|null; sync:()=>void; importGuest:()=>void; resolve:(id:string,choice:'local'|'remote')=>void }
@@ -7,6 +7,7 @@ export interface ProgressContextValue {
   storageStatus: string
   completeMission: (missionId: string, xp: number) => boolean
   saveDraft: (missionId: string, code: string) => void
+  recordLearning:(event:Omit<LearningEvent,'at'>)=>void
   setSound: (enabled: boolean) => void
   setMotion: (enabled: boolean) => void
   resetProgress: () => void

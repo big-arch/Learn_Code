@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto'
 import { mkdirSync, readFileSync, existsSync, statSync } from 'node:fs'
 import { resolve, dirname, extname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validEvidence, normalizeEvidence } from '../shared/learning.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const databasePath = process.env.DB_PATH || resolve(root, 'data/learning.sqlite')
@@ -26,12 +27,14 @@ const mechanisms = JSON.parse(readFileSync(resolve(root, 'src/data/mechanism-mis
 missionIds.push(...mechanisms.map(l => l.id))
 const practiceLessons = JSON.parse(readFileSync(resolve(root, 'src/data/practice-lessons.json'), 'utf8'))
 missionIds.push(...practiceLessons.map(l => l.id))
+const greenhouse=JSON.parse(readFileSync(resolve(root,'src/data/greenhouse.json'),'utf8'))
+missionIds.push(...greenhouse.flatMap(l=>[l.id,l.id+'-review']))
 const record = (v, limit) => v && typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length <= missionIds.length && Object.entries(v).every(([k,s]) => missionIds.includes(k) && typeof s === 'string' && s.length <= limit)
 export function validState(s) {
   return Boolean(s && typeof s === 'object' && s.version === 1 &&
     Number.isSafeInteger(s.xp) && s.xp >= 0 && s.xp <= 100000 &&
     Array.isArray(s.completed) && s.completed.length <= missionIds.length && new Set(s.completed).size === s.completed.length && s.completed.every(id => missionIds.includes(id)) &&
-    record(s.drafts, 20000) && record(s.completedAt, 40) &&
+    record(s.drafts, 20000) && record(s.completedAt, 40) && validEvidence(s.learning) &&
     Array.isArray(s.activity) && s.activity.length === 7 && s.activity.every(n => Number.isSafeInteger(n) && n >= 0 && n <= 10000) &&
     Number.isSafeInteger(s.streak) && s.streak >= 0 && s.streak <= 10000 &&
     (s.lastCompletionDate === null || typeof s.lastCompletionDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.lastCompletionDate)) &&
@@ -59,7 +62,7 @@ const server = createServer(async (req, res) => {
       if (!validState(state)) return json(res, 400, { error: 'Invalid progress' })
       // Store only the documented fields, never arbitrary client properties.
       const { version, xp, completed, completedAt, drafts, activity, streak, lastCompletionDate, sound, motion } = state
-      save.run(hash, JSON.stringify({ version, xp, completed, completedAt, drafts, activity, streak, lastCompletionDate, sound, motion }))
+      save.run(hash, JSON.stringify({ version, xp, completed, completedAt, drafts, activity, streak, lastCompletionDate, sound, motion, ...(state.learning?{learning:normalizeEvidence(state.learning)}:{}) }))
       return json(res, 200, { saved: true })
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') return json(res, 405, { error: 'Method not allowed' })

@@ -20,6 +20,8 @@ jobs:
       - run: npm run test:api
       - run: npm run test:python
       - run: npm run test:world
+      - run: npm run check:content
+      - run: npm run test:learning
       - run: npm run test:cloud
       - run: npm run test:editor
       - run: npm run test:games

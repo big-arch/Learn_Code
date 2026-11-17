@@ -1,6 +1,8 @@
+import type { LearningEvent } from '../shared/learning.mjs'
+export type { LearningEvent } from '../shared/learning.mjs'
 export type LanguageId = 'python' | 'csharp' | 'go' | 'javascript' | 'html' | 'css'
 
-export type ViewId = 'home' | 'courses' | 'map' | 'arena' | 'progress' | 'research' | 'python' | 'adventure' | 'games' | 'practice'
+export type ViewId = 'home' | 'courses' | 'map' | 'arena' | 'progress' | 'research' | 'python' | 'adventure' | 'games' | 'practice' | 'greenhouse'
 
 export type Direction = 'right' | 'left' | 'up' | 'down'
 
@@ -59,6 +61,7 @@ export interface ProgressState {
   lastCompletionDate: string | null
   sound: boolean
   motion: boolean
+  learning?: Record<string,LearningEvent>
 }
 
 export interface TestResult {

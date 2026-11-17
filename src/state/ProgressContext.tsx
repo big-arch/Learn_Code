@@ -9,6 +9,7 @@ import { AccountProvider } from './AccountProvider'
 import { CloudProgressProvider } from './CloudProgressProvider'
 import { useAccount } from './useAccount'
 import type { ProgressContextValue } from './useProgress'
+import { normalizeEvidence } from '../../shared/learning.mjs'
 
 const browserOnly = import.meta.env.MODE === 'pages'
 
@@ -88,6 +89,10 @@ function GuestProgressProvider({ children }: { children: ReactNode }) {
         ...current,
         drafts: { ...current.drafts, [missionId]: code },
       }))
+    },
+    recordLearning:event=>{
+      const id=crypto.randomUUID(),at=new Date().toISOString()
+      setProgress(current=>({...current,learning:normalizeEvidence({...current.learning,[id]:{...event,at}})}))
     },
     setSound: (enabled) => setProgress((current) => ({ ...current, sound: enabled })),
     setMotion: (enabled) => setProgress((current) => ({ ...current, motion: enabled })),
