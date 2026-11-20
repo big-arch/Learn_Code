@@ -19,7 +19,7 @@ export function CodeEditor({ value, fileName, onChange, onRun, onReset, activeLi
   const lines = value.split('\n')
 
   return (
-    <div className="code-editor">
+    <div className="code-editor code-editor-grow">
       <div className="editor-toolbar">
         <span className="editor-file"><i />{fileName}</span>
         <button className="icon-button subtle" type="button" onClick={onReset} aria-label="Сбросить код">
@@ -34,6 +34,7 @@ export function CodeEditor({ value, fileName, onChange, onRun, onReset, activeLi
           key={fileName}
           language={languageFromFile(fileName)}
           mode={assistMode}
+          autoGrow
           value={value}
           onChange={onChange}
           onRun={onRun}

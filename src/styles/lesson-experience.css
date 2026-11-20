@@ -1,0 +1,100 @@
+/* Shared lesson editors: the page/dialog scrolls, while code keeps its full height. */
+.code-editor.code-editor-grow .editor-body {
+  height: auto;
+  min-height: 0;
+  align-items: stretch;
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+.code-editor.code-editor-grow .editor-body .code-assist > textarea {
+  flex: none;
+  height: auto;
+  min-height: calc(2 * 1.8em + 32px);
+  max-height: none;
+  box-sizing: border-box;
+  resize: none;
+  overflow-y: hidden;
+  padding: 16px;
+  font: 16px/1.8 var(--font-mono);
+}
+.code-editor.code-editor-grow .line-numbers {
+  padding: 16px 8px;
+  font: 16px/1.8 var(--font-mono);
+}
+.code-editor.code-editor-grow .line-numbers > span { height: 1.8em; }
+.code-editor.code-editor-grow .code-assist { overflow-anchor: none; }
+
+/* Completion is visible through both the checkmark and a green surface. */
+.python-course .syllabus button.is-complete {
+  color: #e0ffe9;
+  background: linear-gradient(110deg, #173e32, #22583d);
+  border-color: #397b53;
+}
+.python-course .syllabus button.is-complete > span:first-child {
+  display: grid;
+  place-items: center;
+  color: #acffc0;
+}
+.python-course .syllabus button.is-complete:hover { border-color: #8ed5a5; }
+.python-course .syllabus button.is-complete.active {
+  border-color: #b7ecca;
+  box-shadow: inset 0 0 0 1px #b7ecca;
+}
+.python-course .syllabus button:focus-visible { outline: 2px solid #c8f4dc; outline-offset: 3px; }
+
+/* A dark moving nebula sits behind solid, high-contrast navigation labels. */
+.python-course .lesson-navigation .lesson-nav-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  justify-content: center;
+  min-height: 50px;
+  padding: 12px 20px;
+  border: 1px solid #918bd8;
+  border-radius: 12px;
+  background: linear-gradient(115deg, #182c52, #382750 58%, #154550);
+  color: #f6f7ff;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.5;
+  box-shadow: 0 3px 16px #7772d225;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.python-course .lesson-nav-button > * { position: relative; z-index: 1; }
+.python-course .lesson-nav-button::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: -60% -80%;
+  background: linear-gradient(105deg, transparent 20%, #7867ca35 40%, #52c9d126 58%, transparent 80%);
+  transform: translateX(-20%) rotate(-8deg);
+  animation: lesson-nebula 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.python-course .lesson-navigation .lesson-nav-button:hover:not(:disabled) {
+  border-color: #c4bdff;
+  box-shadow: 0 3px 22px #9384e545;
+}
+.python-course .lesson-nav-button:focus-visible { outline: 3px solid #b9f3ff; outline-offset: 4px; }
+.python-course .lesson-navigation .lesson-nav-button:disabled {
+  opacity: 1;
+  background: #202a38;
+  color: #aeb8c7;
+  border-color: #4c596b;
+  box-shadow: none;
+  cursor: default;
+}
+.python-course .lesson-nav-button:disabled::before { display: none; }
+.python-course .lesson-navigation small { text-align: center; }
+@keyframes lesson-nebula { to { transform: translateX(20%) rotate(8deg); } }
+@media (max-width: 560px) {
+  .code-editor.code-editor-grow .editor-body { grid-template-columns: 40px minmax(0, 1fr); }
+  .code-editor.code-editor-grow .editor-body .code-assist > textarea { padding-inline: 12px; }
+  .python-course .lesson-navigation { gap: 12px 8px; }
+  .python-course .lesson-navigation .lesson-nav-button { padding: 12px; font-size: 14px; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .python-course .lesson-nav-button::before { animation: none; transform: none; }
+  .python-course .lesson-navigation .lesson-nav-button { transition: none; }
+}
+.app-shell[data-motion=off] .lesson-nav-button::before { animation: none; transform: none; }
+.app-shell[data-motion=off] .lesson-navigation .lesson-nav-button { transition: none; }

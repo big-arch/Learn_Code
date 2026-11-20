@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Check, Code2, Download, Lightbulb, Rot
 import { pythonChapters, pythonLessons } from '../data/pythonCourse'
 import type { PythonLesson } from '../data/pythonCourse'
 import { PythonRunner } from '../lib/pythonRunner'
+import { hasPassedPythonPractice, PYTHON_PRACTICE_VERSION } from '../lib/pythonCompletion'
 import type { PythonResult } from '../lib/pythonRunner'
 import { useProgress } from '../state/useProgress'
 import { ProgramStage } from '../components/ProgramStage'
@@ -25,14 +26,14 @@ export function PythonView({ startChapter = null, onAdventure, onPractice, onGre
     {onGreenhouse&&<button type="button" className="course-adventure-link" onClick={onGreenhouse}>Углублённая глава: условия и отладка в «Умной теплице» <ArrowRight size={17}/></button>}
     <div className="python-layout">
       <details className="syllabus" open><summary><BookOpen size={18}/> Программа курса</summary>
-        {pythonChapters.map((chapter,c)=><section key={chapter.title}><h2><span>0{c+1}</span>{chapter.title}</h2>{pythonLessons.map((l,i)=>l.chapter===c&&<button type="button" key={l.id} className={i===index?'active':''} aria-current={i===index?'step':undefined} onClick={()=>select(i)}><span>{progress.completed.includes(l.id)?<Check size={14}/>:String(i+1).padStart(2,'0')}</span><span>{l.title.split(': ').at(-1)}</span></button>)}</section>)}
+        {pythonChapters.map((chapter,c)=><section key={chapter.title}><h2><span>0{c+1}</span>{chapter.title}</h2>{pythonLessons.map((l,i)=>l.chapter===c&&<button type="button" key={l.id} className={[i===index?'active':'',progress.completed.includes(l.id)?'is-complete':''].filter(Boolean).join(' ')} aria-current={i===index?'step':undefined} onClick={()=>select(i)}><span aria-hidden="true">{progress.completed.includes(l.id)?<Check size={18}/>:String(i+1).padStart(2,'0')}</span><span>{l.title.split(': ').at(-1)}</span>{progress.completed.includes(l.id)&&<span className="assist-sr-only"> — урок пройден</span>}</button>)}</section>)}
       </details>
       <div id="python-workspace" className="python-workspace"><PythonLessonView key={lesson.id} lesson={lesson} index={index} onPrevious={()=>select(index-1)} onNext={()=>select(Math.min(index+1,23))}/></div>
     </div>
   </div>
 }
 function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;index:number;onPrevious:()=>void;onNext:()=>void}) {
-  const {progress,completeMission,saveDraft,storageStatus}=useProgress()
+  const {progress,completeMission,saveDraft,recordLearning,storageStatus}=useProgress()
   const [tab,setTab]=useState<'theory'|'quiz'|'code'>('theory')
   const code=progress.drafts[lesson.id]??lesson.starter
   const [stdin,setStdin]=useState(lesson.stdin)
@@ -41,19 +42,29 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
   const [visual,setVisual]=useState<{result:PythonResult;source:string;demo:boolean}|null>(null),[runId,setRunId]=useState(0)
   const [activeLine,setActiveLine]=useState<number|undefined>()
   const [hint,setHint]=useState(0),[solutionOpen,setSolutionOpen]=useState(false)
-  const runner=useRef(new PythonRunner()),alive=useRef(true),busyRef=useRef(false)
+  const runner=useRef(new PythonRunner()),alive=useRef(true),busyRef=useRef(false),generation=useRef(0),priorCode=useRef(code)
   const quizDone=progress.completed.includes(lesson.id+'-quiz')
   const done=progress.completed.includes(lesson.id)
   const correct=Boolean(result&&!result.error&&result.tests.length&&result.tests.every(t=>t.passed))
+  const practiceDone=hasPassedPythonPractice(progress,lesson.id)
   useEffect(()=>{alive.current=true;const current=runner.current;return()=>{alive.current=false;current.stop()}},[])
+  useEffect(()=>{if(practiceDone&&quizDone&&!done)completeMission(lesson.id,lesson.xp)},[practiceDone,quizDone,done,completeMission,lesson.id,lesson.xp])
+  // A cloud draft update also invalidates an in-flight run of the previous code.
+  useEffect(()=>{if(priorCode.current!==code){priorCode.current=code;generation.current++;runner.current.stop();busyRef.current=false;setBusy(false);setStatus('');setResult(null);setVisual(null);setActiveLine(undefined)}},[code])
+  const stop=()=>{generation.current++;runner.current.stop();busyRef.current=false;setBusy(false);setStatus('')}
   const run=async(demo=false)=>{
     if(busyRef.current)return
+    const request=++generation.current,source=demo?lesson.example:code
+    const isCurrent=()=>alive.current&&generation.current===request
     busyRef.current=true;setBusy(true);setError('');setResult(null);setVisual(null);setActiveLine(undefined);setStatus('Подготавливаем запуск…')
-    try{const value=await runner.current.run(demo?lesson.example:code,demo?[]:lesson.checks,stdin,s=>{if(alive.current)setStatus(s)});if(alive.current){if(!demo)setResult(value);setVisual({result:value,source:demo?lesson.example:code,demo});setRunId(i=>i+1)}}
-    catch(e){if(alive.current)setError((e as Error).message)}
-    finally{busyRef.current=false;if(alive.current){setBusy(false);setStatus('')}}
+    try{const value=await runner.current.run(source,demo?[]:lesson.checks,stdin,s=>{if(isCurrent())setStatus(s)});if(isCurrent()){
+      if(!demo){setResult(value);recordLearning({lesson:lesson.id,version:PYTHON_PRACTICE_VERSION,kind:'attempt',variant:'lesson',passed:!value.error&&value.tests.length>0&&value.tests.every(t=>t.passed),helped:hint>0||solutionOpen})}
+      setVisual({result:value,source,demo});setRunId(i=>i+1)
+    }}
+    catch(e){if(isCurrent())setError((e as Error).message)}
+    finally{if(isCurrent()){busyRef.current=false;setBusy(false);setStatus('')}}
   }
-  const change=(value:string)=>{if(busyRef.current)runner.current.stop();saveDraft(lesson.id,value);setResult(null);setVisual(null);setActiveLine(undefined);setError('')}
+  const change=(value:string)=>{stop();priorCode.current=value;saveDraft(lesson.id,value);setResult(null);setVisual(null);setActiveLine(undefined);setError('')}
   const checkAnswer=()=>{setChecked(true);if(answer===lesson.quiz.correct)completeMission(lesson.id+'-quiz',10)}
   const download=()=>{const blob=new Blob([code],{type:'text/x-python;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=lesson.id+'.py';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   return <>
@@ -79,17 +90,17 @@ function PythonLessonView({lesson,index,onPrevious,onNext}:{lesson:PythonLesson;
       <div className="practice-task"><span className="reading-label">ТВОЯ МИССИЯ</span><p>{lesson.task}</p></div>
       <details className="lesson-acceptance"><summary>Что проверяется в твоём решении</summary><ul>{lesson.checks.map(c=><li key={c.label}>{c.label}</li>)}</ul></details>
       <div className="python-lab-grid"><div><CodeEditor activeLine={activeLine} value={code} fileName={'lesson_'+(index+1)+'.py'} onChange={change} onRun={()=>void run()} onReset={()=>change(lesson.starter)}/>
-        <div className="python-run-tools"><label>Ввод для input()<textarea aria-label="Ввод для Python" value={stdin} maxLength={10000} onChange={e=>{if(busyRef.current)runner.current.stop();setStdin(e.target.value);setResult(null);setVisual(null);setActiveLine(undefined)}} rows={2} placeholder="Один ответ на строку"/></label><button type="button" className="button secondary" onClick={download}><Download size={15}/>Скачать .py</button></div>
-        {busy&&<div className="python-loading" role="status"><i/>{status}<button type="button" onClick={()=>runner.current.stop()}><Square size={14}/> Остановить</button></div>}
+        <div className="python-run-tools"><label>Ввод для input()<textarea aria-label="Ввод для Python" value={stdin} maxLength={10000} onChange={e=>{stop();setStdin(e.target.value);setResult(null);setVisual(null);setActiveLine(undefined)}} rows={2} placeholder="Один ответ на строку"/></label><button type="button" className="button secondary" onClick={download}><Download size={15}/>Скачать .py</button></div>
+        {busy&&<div className="python-loading" role="status"><i/>{status}<button type="button" onClick={()=>{stop();setStatus('');setError('Выполнение остановлено. Код сохранён — можно запустить снова.')}}><Square size={14}/> Остановить</button></div>}
         {error&&<div className="python-error" role="alert">{error}</div>}
         <div className="python-console" aria-live="polite"><div>КОНСОЛЬ PYTHON <span>{result?'Запуск завершён':'Здесь появится результат'}</span></div><pre>{result?.output||'›'}</pre>{result?.error&&<p role="alert">{result.error}</p>}</div>
       </div><div className="lesson-world"><ProgramStage key={runId} result={visual?.result??null} source={visual?.source??code} demo={visual?.demo??false} busy={busy} onDemo={()=>void run(true)} onStep={setActiveLine}/>{Boolean(result?.variables.length)&&<details className="final-memory"><summary>Все значения в конце программы</summary><dl className="variable-list" aria-label="Значения переменных">{result!.variables.map(v=><div key={v.name}><dt><code>{v.name}</code><small>{v.type}</small></dt><dd><code>{v.value}</code></dd></div>)}</dl></details>}{result&&<div className="python-checks">{result.tests.map(t=><p key={t.label} className={t.passed?'passed':''}>{t.passed?<Check size={16}/>:<RotateCcw size={16}/>} {t.label}</p>)}</div>}</div></div>
       <div className="lesson-help"><button type="button" onClick={()=>setHint(h=>Math.min(h+1,lesson.hints.length))}><Lightbulb size={17}/>Подсказка {hint}/{lesson.hints.length}</button><button type="button" onClick={()=>setSolutionOpen(v=>!v)}>{solutionOpen?'Скрыть разбор':'Разобрать решение'}</button></div>
       {hint>0&&<p className="lesson-hint">{lesson.hints[hint-1]}</p>}
       {solutionOpen&&<details className="solution-panel" open><summary>Пример решения: прочитай, затем напиши самостоятельно</summary><pre>{lesson.solution}</pre><p>Сравни каждую строку с целью задания. Измени данные и предскажи, как изменится результат.</p></details>}
-      <div className="lesson-finish">{done?<p><Trophy size={20}/>Урок завершён. Можно повторить в любое время.</p>:correct&&quizDone?<button className="button primary" type="button" onClick={()=>completeMission(lesson.id,lesson.xp)}><Check size={18}/>Завершить урок · +{lesson.xp} XP</button>:<p>{correct?'Код работает! Осталось правильно ответить на вопрос во вкладке «Проверить себя».':'Пройди вопрос и проверки кода, чтобы завершить урок.'}</p>}</div>
+      <div className="lesson-finish" role="status">{done?<p><Trophy size={20}/>Урок пройден · {lesson.xp} XP получено. Можно переходить дальше.</p>:<p>{practiceDone||correct?'Практика зачтена и сохранена. Осталось правильно ответить на вопрос во вкладке «Проверить себя».':quizDone?'Вопрос пройден. Запусти своё решение: после успешных проверок урок зачтётся автоматически.':'Ответь на вопрос и пройди проверки кода — урок зачтётся автоматически.'}</p>}</div>
     </section>}
-    <footer className="lesson-navigation"><button type="button" onClick={onPrevious} disabled={index===0}><ArrowLeft size={16}/>Назад</button><small>{storageStatus}</small>{index<23?<button type="button" onClick={onNext}>Следующий урок <ArrowRight size={16}/></button>:<span>Финал курса <Trophy size={17}/></span>}</footer>
+    <footer className="lesson-navigation"><button className="lesson-nav-button" type="button" onClick={onPrevious} disabled={index===0}><ArrowLeft size={18}/><span>Назад</span></button><small>{done?'✓ Урок пройден · ':''}{storageStatus}</small>{index<23?<button className="lesson-nav-button" type="button" onClick={onNext}><span>Следующий урок</span><ArrowRight size={18}/></button>:<span>Финал курса <Trophy size={17}/></span>}</footer>
     {done&&index===23&&<div className="course-certificate"><Trophy size={32}/><h3>Твой первый проект работает.</h3><p>Продолжай развивать диспетчер: добавь сохранение в файл, меню команд и проверки. Код можно скачать во вкладке практики.</p></div>}
   </>
 }

@@ -3,6 +3,7 @@ import type { KeyboardEvent, UIEvent } from 'react'
 import type { LanguageId } from '../types'
 import { editKey, expandCompletion, getCompletions } from '../lib/codeAssist'
 import type { AssistMode, CodeEdit, Completion } from '../lib/codeAssist'
+import { revealEditorCaret } from '../lib/editorCaret'
 import './code-assist.css'
 
 interface Props {
@@ -34,7 +35,7 @@ export function AssistedCodeInput({id,value,onChange,onRun,language,mode='genera
   const [automatic,setAutomatic]=useState(true),[menu,setMenu]=useState<Menu|null>(null),[active,setActive]=useState(0)
   const [notice,setNotice]=useState('')
   const current=useRef<CodeEdit>({value,start:0,end:0}),undo=useRef<CodeEdit[]>([]),redo=useRef<CodeEdit[]>([])
-  const allowTabExit=useRef(false),composing=useRef(false),frame=useRef(0)
+  const allowTabExit=useRef(false),composing=useRef(false),frame=useRef(0),caretFrame=useRef(0)
   const shown=menu?.value===value&&!readOnly?menu:null
 
   useLayoutEffect(()=>{if(autoGrow&&input.current)fitContent(input.current)},[autoGrow,value,readOnly])
@@ -58,13 +59,18 @@ export function AssistedCodeInput({id,value,onChange,onRun,language,mode='genera
     // Remote sync, lesson navigation and reset start a new editing history.
     if(current.current.value!==value){current.current={value,start:0,end:0};undo.current=[];redo.current=[];setMenu(null)}
   },[value])
-  useEffect(()=>()=>cancelAnimationFrame(frame.current),[])
+  useEffect(()=>()=>{cancelAnimationFrame(frame.current);cancelAnimationFrame(caretFrame.current)},[])
   useEffect(()=>{document.getElementById(`${uid}-option-${active}`)?.scrollIntoView({block:'nearest'})},[active,uid])
 
+  function followCaret() {
+    if(!autoGrow)return
+    cancelAnimationFrame(caretFrame.current)
+    caretFrame.current=requestAnimationFrame(()=>{if(input.current)revealEditorCaret(input.current)})
+  }
   function selection(edit:CodeEdit) {
     cancelAnimationFrame(frame.current)
     frame.current=requestAnimationFrame(()=>{
-      if(input.current&&input.current.value===edit.value){input.current.focus({preventScroll:true});input.current.setSelectionRange(edit.start,edit.end)}
+      if(input.current&&input.current.value===edit.value){input.current.focus({preventScroll:true});input.current.setSelectionRange(edit.start,edit.end);followCaret()}
     })
   }
   function remember() {
@@ -126,12 +132,13 @@ export function AssistedCodeInput({id,value,onChange,onRun,language,mode='genera
     <textarea ref={input} id={id||uid} aria-label={label} aria-describedby={`${uid}-help`} aria-autocomplete={readOnly?'none':'list'} aria-controls={shown?`${uid}-list`:undefined} aria-activedescendant={shown?`${uid}-option-${active}`:undefined}
       value={value} readOnly={readOnly} maxLength={maxLength} placeholder={placeholder} spellCheck={false} autoCapitalize="off" autoCorrect="off" autoComplete="off"
       onKeyDown={keyDown} onScroll={e=>{setMenu(null);onScroll?.(e)}}
-      onSelect={e=>{current.current={value:e.currentTarget.value,start:e.currentTarget.selectionStart,end:e.currentTarget.selectionEnd}}}
+      onSelect={e=>{current.current={value:e.currentTarget.value,start:e.currentTarget.selectionStart,end:e.currentTarget.selectionEnd};followCaret()}}
       onPointerDown={()=>setMenu(null)}
       onCompositionStart={()=>{composing.current=true;setMenu(null)}} onCompositionEnd={e=>{composing.current=false;show(e.currentTarget.value,e.currentTarget.selectionStart)}}
       onChange={e=>{
         const el=e.currentTarget
         remember();current.current={value:el.value,start:el.selectionStart,end:el.selectionEnd};onChange(el.value)
+        followCaret()
         if(el.selectionStart===el.selectionEnd)show(el.value,el.selectionStart);else setMenu(null)
       }}/>
     {!readOnly&&<div className="code-assist-bar">
